@@ -2,7 +2,7 @@ os: linux
 version: 0.0
 files:
   - source: app.js
-    desination: /opt/unicorn
+    destination: /opt/unicorn
 
   - source: package.json
-    desination: /opt/unicorn
+    destination: /opt/unicorn
