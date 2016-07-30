@@ -6,3 +6,8 @@ files:
 
   - source: package.json
     destination: /opt/unicorn
+
+hooks:
+  AfterInstall:
+    - location: scripts/after_install.sh
+      runas: root
