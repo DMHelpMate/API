@@ -4,6 +4,11 @@ Description=unicorn
 [Service]
 ExecStart=/opt/unicorn/app.js
 Restart=Always
-WorkingDirectory=/opt/unicorn
+User=nobody
+Group=nobody
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
+WorkingDirectory=/opt/unicorn
+
+[Install]
+WantedBy=multi-user.target
