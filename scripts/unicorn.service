@@ -1,0 +1,9 @@
+[Unit]
+Description=unicorn
+
+[Service]
+ExecStart=/opt/unicorn/app.js
+Restart=Always
+WorkingDirectory=/opt/unicorn
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
