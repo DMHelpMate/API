@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-sudo systemctl disable unicorn
+systemctl stop unicorn

@@ -2,7 +2,7 @@
 Description=unicorn
 
 [Service]
-ExecStart=/opt/unicorn/app.js
+ExecStart=node /opt/unicorn/app.js
 Restart=Always
 User=nobody
 Group=nobody

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-sudo systemctl start unicorn
+systemctl start unicorn
