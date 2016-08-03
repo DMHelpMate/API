@@ -7,8 +7,6 @@ files:
     destination: /opt/unicorn
   - source: package.json
     destination: /opt/unicorn
-  - source: unicorn.service
-    destination: /opt/unicorn/scripts
 
 hooks:
   BeforeInstall:

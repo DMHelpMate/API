@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-systemctl stop unicorn
+cd /opt/unicorn
+PID = ps -ef | grep "node"
+kill $PID

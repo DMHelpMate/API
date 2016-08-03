@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-systemctl start unicorn
+cd /opt/unicorn
+nohup node app.js &
