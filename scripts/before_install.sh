@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
-cd /opt/unicorn
-kill -9 'cat save_pid.txt'
+PID_FILE="/var/run/unicorn.pid"
+if [[ -e ${PID_FILE}]]; then
+	kill -9 $(cat ${PID_FILE})
+fi
