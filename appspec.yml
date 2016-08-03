@@ -1,13 +1,20 @@
 os: linux
+
 version: 0.0
+
 files:
   - source: app.js
     destination: /opt/unicorn
-
   - source: package.json
     destination: /opt/unicorn
 
 hooks:
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      runas: root
   AfterInstall:
     - location: scripts/after_install.sh
+      runas: root
+  ApplicationStart:
+    - location: scripts/app_start.sh
       runas: root
