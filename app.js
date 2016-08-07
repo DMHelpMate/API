@@ -4,6 +4,10 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 
+// it's a cool header for the / route
+const COOL_HEADER = 
+' _    _       _                      _____                                                     _____ _____ \n| |  | |     (_)                    |  __ \\                                              /\\   |  __ \\_   _|\n| |  | |_ __  _  ___ ___  _ __ _ __ | |__) |__ _ _ __ ___  _ __   __ _  __ _  ___       /  \\  | |__) || |  \n| |  | | \'_ \\| |/ __/ _ \\| \'__| \'_ \\|  _  // _` | \'_ ` _ \\| \'_ \\ / _` |/ _` |/ _ \\     / /\\ \\ |  ___/ | |  \n| |__| | | | | | (_| (_) | |  | | | | | \\ \\ (_| | | | | | | |_) | (_| | (_| |  __/    / ____ \\| |    _| |_ \n \\____/|_| |_|_|\\___\\___/|_|  |_| |_|_|  \\_\\__,_|_| |_| |_| .__/ \\__,_|\\__, |\\___|   /_/    \\_\\_|   |_____|\n                                                          | |           __/ |                              \n                                                          |_|          |___/                               \n';
+
 // create db connection and set vars for routes to access db
 mongoose.createConnection('mongodb://localhost/unicorn');
 var db = mongoose.connect;
@@ -12,7 +16,9 @@ app.set('mongoose', mongoose);
 
 // api home screen
 app.get('/', function(req, res) {
-	res.send('Sweet! You\'re using the UnicornRampage API. **High Five!**');
+	res.send("<pre>" + COOL_HEADER + "</pre>");
+	//res.send('<h1>UnicornRampage API</h1><p>Sweet! You\'re using the our the API. You must be one of those cool backend devs or just weirdly curious..</p><strong>**High 5!**</strong>');
+	//res.send('Sweet! You\'re using the UnicornRampage API. **High Five!**');
 });
 
 // import route modules
