@@ -1,31 +1,25 @@
 
+// import dependencies
 var router = require('express').Router();
-var mongoose = require('mongoose');
 
-// initialize connection
-mongoose.connect('mongodb://localhost/unicorn');
-var db = mongoose.connection;
+// route http reqs
+router.route('/')
+	.delete(function(req, res) {
+		var mongoose = req.app.get('mongoose');
+		res.send('Accessed DELETE req');
+	})
+	.get(function(req, res) {
+		var mongoose = req.app.get('mongoose');
+		res.send('Accessed GET req');
+	})
+	.post(function(req, res) {
+		var mongoose = req.app.get('mongoose');
+		res.send('Accessed POST req');
+	})
+	.put(function(req, res) {
+		var mongoose = req.app.get('mongoose');
+		res.send('Accessed PUT req');
+	});
 
-// handle connection error
-db.on('error', function() {
-	console.log('oops... something went wrong in campaigns');
-	mongoose.disconnect();
-	return;
-});
-
-// handle connection open
-db.once('open', function() {
-	router.route('/')
-		.get(function(req, res) {
-			res.send('connection established. get worked');
-			mongoose.disconnect();
-			return;
-		})
-		.post(function(req, res) {
-			res.send('connection established. get worked');
-			mongoose.disconnect();
-			return;
-		});
-});
-
+// make available to node app
 module.exports = router;
