@@ -7,10 +7,10 @@ files:
     destination: /opt/unicorn
 
   - source: package.json
-    destination: /opt/unicorn
+    destination: /opt/unicorn/routes
 
   - source: routes
-    destination: /opt/unicorn
+    destination: /opt/unicorn/routes
 
 
 hooks:
