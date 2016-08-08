@@ -17,6 +17,7 @@ app.set('mongoose', mongoose);
 
 // sanitize json data
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 // api home screen
 app.get('/', function(req, res) {
