@@ -9,17 +9,8 @@ files:
   - source: package.json
     destination: /opt/unicorn
 
-  - source: campaignsRoute.js
-    destination: /opt/unicorn/routes
-
-  - source: encountersRoute.js
-    destination: /opt/unicorn/routes
-
-  - source: monstersRoute.js
-    destination: /opt/unicorn/routes
-
-  - source: monsters_encountersRoute.js
-    destination: /opt/unicorn/routes
+  - source: routes
+    destination: /opt/unicorn
 
 
 hooks:
