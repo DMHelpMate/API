@@ -14,7 +14,9 @@ mongoose.createConnection('mongodb://localhost/unicorn');
 var db = mongoose.connect;
 app.set('db', db);
 app.set('mongoose', mongoose);
-app.set('bodyParser', bodyParser);
+
+// sanitize json data
+app.use(bodyParser.json());
 
 // api home screen
 app.get('/', function(req, res) {

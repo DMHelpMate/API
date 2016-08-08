@@ -2,16 +2,12 @@
 // import dependencies
 var router = require('express').Router();
 
-// cleanly vars
-var bodyParser;
-
 // mongoose vars
 var mongoose,
 	campaignsSchema;
 
 // route http reqs
 router.use(function(req, res, next) {
-		bodyParser = req.app.get('bodyParser');
 		mongoose = req.app.get('mongoose');
 		next();
 	})
