@@ -42,7 +42,19 @@ describe('Route requests', function() {
 			chai.request(URL)
 				.post('/encounters')
 				.send({
-
+					'end_id': '9871',
+					'general': {
+						'name': 'The Duel of the Lactose Intolerants',
+						'setup': 'A gang war between two lactose interolant gangs is beginning. There are pitchers full of milk everywhere.',
+						'readaloud': 'You stand in the center, two pitchers full of milk, while the lactose interolant gangs prepare for war'
+					},
+					'location': 'Dairy Queen parkinglot',
+					'monsters': [
+						{
+							'quantity': 5,
+							'mon_id': '1234'
+						}
+					]
 				})
 				.end(function(err, res) {
 					expect(err).to.be.null;
