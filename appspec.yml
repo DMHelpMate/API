@@ -7,7 +7,7 @@ files:
     destination: /opt/unicorn
 
   - source: package.json
-    destination: /opt/unicorn/routes
+    destination: /opt/unicorn
 
   - source: routes
     destination: /opt/unicorn/routes
