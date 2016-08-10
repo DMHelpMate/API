@@ -13,8 +13,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
-  "author": "",
+  "author": "Cyrus Sarkosh csarkosh@uw.edu, Tori Overman, Robert Boyer",
   "license": "ISC"
 }
