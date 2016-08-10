@@ -12,25 +12,29 @@ var should = chai.should();
 chai.use(chaiHTTP);
 
 // routing vars
-const URL = 'http://localhost:3000/'
-mon_url = 'monsters/'
+const URL = 'http://localhost:3000/';
+mon_url = URL + 'monsters';
 
 // test routes
 describe('Route requests', function() {
+
+	// test monster routes
 	describe('Monster request', function() {
 		it('POSTs a monster JSON to Monsters collection', function() {
-			//// uncomment when ready to test /monsters POST request
-			// chai.request(app)
-			// 	.post('/monsters')
-			// 	.send({
-			// 		'mon_id' : '1234',
-			// 		'mhitpoints' : 5,
-			// 		'mattack' : 5,
-			// 		'mdefense' : 5
-			// 	})
-			// 	.end(function(err, res) {
-			// 		res.should.have.status(200);
-			// 	});
+			// uncomment when ready to test /monsters POST request
+			chai.request('http://localhost:3000')
+				.post('/monsters')
+				.send({
+					'mon_id' : '1234',
+					'mname' : 'Heraldy the Baldy',
+					'mhitpoints' : 5,
+					'mattack' : 5,
+					'mdefense' : 5
+				})
+				.end(function(err, res) {
+					expect(err).to.be.null;
+					expect(res).should.have.status(200);
+				});
 		});
 	});
 	// describe('Encounter request', function() {

@@ -10,10 +10,22 @@ const COOL_HEADER =
 ' _    _       _                      _____                                                     _____ _____ \n| |  | |     (_)                    |  __ \\                                              /\\   |  __ \\_   _|\n| |  | |_ __  _  ___ ___  _ __ _ __ | |__) |__ _ _ __ ___  _ __   __ _  __ _  ___       /  \\  | |__) || |  \n| |  | | \'_ \\| |/ __/ _ \\| \'__| \'_ \\|  _  // _` | \'_ ` _ \\| \'_ \\ / _` |/ _` |/ _ \\     / /\\ \\ |  ___/ | |  \n| |__| | | | | | (_| (_) | |  | | | | | \\ \\ (_| | | | | | | |_) | (_| | (_| |  __/    / ____ \\| |    _| |_ \n \\____/|_| |_|_|\\___\\___/|_|  |_| |_|_|  \\_\\__,_|_| |_| |_| .__/ \\__,_|\\__, |\\___|   /_/    \\_\\_|   |_____|\n                                                          | |           __/ |                              \n                                                          |_|          |___/                               \n';
 
 // create db connection and set vars for routes to access db
-mongoose.createConnection('mongodb://localhost/unicorn');
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://127.0.0.1/unicorn');
 var db = mongoose.connect;
 app.set('db', db);
 app.set('mongoose', mongoose);
+
+var MonstersSchema = new mongoose.Schema({
+	'mon_id': String,
+	'mname': String,
+	'mhitpoints': Number,
+	'mattack': Number,
+	'mdefense': Number
+});
+
+// create schemas
+app.set('MonstersSchema', MonstersSchema);
 
 // sanitize json data
 app.use(bodyParser.json());
