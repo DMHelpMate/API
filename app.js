@@ -1,8 +1,9 @@
 
 // import dependencies
-var express = require('express');
-var app = express();
-var mongoose = require('mongoose');
+var express 	= require('express');
+var app 		= express();
+var mongoose 	= require('mongoose');
+var bodyParser 	= require('body-parser');
 
 // it's a cool header for the / route
 const COOL_HEADER = 
@@ -14,11 +15,13 @@ var db = mongoose.connect;
 app.set('db', db);
 app.set('mongoose', mongoose);
 
+// sanitize json data
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
 // api home screen
 app.get('/', function(req, res) {
 	res.send("<pre>" + COOL_HEADER + "</pre>");
-	//res.send('<h1>UnicornRampage API</h1><p>Sweet! You\'re using the our the API. You must be one of those cool backend devs or just weirdly curious..</p><strong>**High 5!**</strong>');
-	//res.send('Sweet! You\'re using the UnicornRampage API. **High Five!**');
 });
 
 // import route modules
