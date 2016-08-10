@@ -19,12 +19,18 @@ mon_url = 'monsters/'
 describe('Route requests', function() {
 	describe('Monster request', function() {
 		it('POSTs a monster JSON to Monsters collection', function() {
-			var testMonster = {
-				'mon_id' : '1234',
-				'mhitpoints' : 5,
-				'mattack' : 5,
-				'mdefense' : 5
-			}
+			//// uncomment when ready to test /monsters POST request
+			// chai.request(app)
+			// 	.post('/monsters')
+			// 	.send({
+			// 		'mon_id' : '1234',
+			// 		'mhitpoints' : 5,
+			// 		'mattack' : 5,
+			// 		'mdefense' : 5
+			// 	})
+			// 	.end(function(err, res) {
+			// 		res.should.have.status(200);
+			// 	});
 		});
 	});
 	// describe('Encounter request', function() {
