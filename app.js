@@ -18,6 +18,9 @@ app.set('mongoose', mongoose);
 
 // globalize schemas
 app.set('MonstersSchema', require('./schemas/monstersSchema'));
+app.set('EncountersSchema', require('./schemas/encountersSchema'));
+app.set('CampaignsSchema', require('./schemas/campaignsSchema'));
+app.set('Monsters_EncountersSchema', require('./schemas/monsters_encountersSchema'));
 
 // sanitize json data
 app.use(bodyParser.json());
