@@ -16,6 +16,7 @@ router.use(function(req, res, next) {
 		.delete(function(req, res) {
 		})
 		.get(function(req, res) {
+			res.send('Accessed GET req');
 		})
 		.post(function(req, res) {
 			if (req.body) {

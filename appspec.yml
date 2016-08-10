@@ -12,6 +12,9 @@ files:
   - source: routes
     destination: /opt/unicorn/routes
 
+  - source: schemas
+    destination: /opt/unicorn/schemas
+
 
 hooks:
   BeforeInstall:
