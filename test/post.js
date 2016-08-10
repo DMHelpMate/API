@@ -12,7 +12,7 @@ var should = chai.should();
 chai.use(chaiHTTP);
 
 // routing vars
-const URL = 'http://localhost:3000/';
+const URL = 'http://localhost:3000';
 mon_url = URL + 'monsters';
 
 // test routes
@@ -22,7 +22,7 @@ describe('Route requests', function() {
 	describe('Monster request', function() {
 		it('POSTs a monster JSON to Monsters collection', function() {
 			// uncomment when ready to test /monsters POST request
-			chai.request('http://localhost:3000')
+			chai.request(URL)
 				.post('/monsters')
 				.send({
 					'mon_id' : '1234',
@@ -37,9 +37,31 @@ describe('Route requests', function() {
 				});
 		});
 	});
-	// describe('Encounter request', function() {
-	// 	it('POSTs an encounter JSON to Encounters collection', function() {});
-	// })
+	describe('Encounter request', function() {
+		it('POSTs an encounter JSON to Encounters collection', function() {
+			chai.request(URL)
+				.post('/encounters')
+				.send({
+					'end_id': '9871',
+					'general': {
+						'name': 'The Duel of the Lactose Intolerants',
+						'setup': 'A gang war between two lactose interolant gangs is beginning. There are pitchers full of milk everywhere.',
+						'readaloud': 'You stand in the center, two pitchers full of milk, while the lactose interolant gangs prepare for war'
+					},
+					'location': 'Dairy Queen parkinglot',
+					'monsters': [
+						{
+							'quantity': 5,
+							'mon_id': '1234'
+						}
+					]
+				})
+				.end(function(err, res) {
+					expect(err).to.be.null;
+					expect(res).should.have.status(200);
+				})
+		});
+	})
 	// describe('Campaign request', function() {
 	// 	it('POSTs a campaign JSON to Campaigns collection', function() {});
 	// });

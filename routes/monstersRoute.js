@@ -14,22 +14,16 @@ router.use(function(req, res, next) {
 	})
 	.route('/')
 		.delete(function(req, res) {
+			res.sendStatus(403);
 		})
 		.get(function(req, res) {
 			res.send('Accessed GET req');
 		})
 		.post(function(req, res) {
 			if (req.body) {
-				// var monsterToAdd = new Monster(req.body);
-				// monsterToAdd.save(function(err) {
-				// 	if (err) {
-				// 		console.log(err);
-				// 	} else {
-				// 		console.log('/monsters POST: OK');
-				// 	}
-				// });
 				Monster.create(req.body, function(err, newMonster) {
 					if (err) {
+						console.log('/monsters POST: Error: ');
 						console.log(err);
 					} else {
 						console.log('/monsters POST: OK');
