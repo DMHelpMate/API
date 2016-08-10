@@ -16,16 +16,8 @@ var db = mongoose.connect;
 app.set('db', db);
 app.set('mongoose', mongoose);
 
-var MonstersSchema = new mongoose.Schema({
-	'mon_id': String,
-	'mname': String,
-	'mhitpoints': Number,
-	'mattack': Number,
-	'mdefense': Number
-});
-
-// create schemas
-app.set('MonstersSchema', MonstersSchema);
+// globalize schemas
+app.set('MonstersSchema', require('./schemas/monstersSchema'));
 
 // sanitize json data
 app.use(bodyParser.json());
