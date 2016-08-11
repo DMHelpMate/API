@@ -2,6 +2,9 @@
 // import dependencies
 var router = require('express').Router();
 
+// query select
+const SELECT = '-_id general location monsters'
+
 // mongoose vars
 var mongoose,
 	Encounter;
@@ -17,7 +20,26 @@ router.use(function(req, res, next) {
 			res.sendStatus(403);
 		})
 		.get(function(req, res) {
-			res.send('Accessed GET req');
+			// id in query string: retrieve one by id
+			if (req.query.enc_id) {
+				Encounter.findOne({'enc_id': req.query.enc_id}, SELECT, function(err, result) {
+					if (err) {
+						return res.json(null);
+					} else {
+						return res.json(result);
+					}
+				});
+			}
+			// empty query string: retrieve all
+			else {
+				Encounter.find({}, SELECT, function(err, result) {
+					if (err) {
+						return res.json(null);
+					} else {
+						return res.json(result);
+					}
+				});
+			}
 		})
 		.post(function(req, res) {
 			if (req.body) {
