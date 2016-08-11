@@ -42,7 +42,7 @@ describe('Route requests', function() {
 			chai.request(URL)
 				.post('/encounters')
 				.send({
-					'end_id': '9871',
+					'enc_id': '9871',
 					'general': {
 						'name': 'The Duel of the Lactose Intolerants',
 						'setup': 'A gang war between two lactose interolant gangs is beginning. There are pitchers full of milk everywhere.',
