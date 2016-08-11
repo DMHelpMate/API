@@ -4,11 +4,12 @@ var router = require('express').Router();
 
 // mongoose vars
 var mongoose,
-	campaignsSchema;
+	Campaign;
 
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
+		Campaign = mongoose.model('Campaign', req.app.get('CampaignsSchema'));
 		next();
 	})
 	.route('/')
@@ -19,7 +20,19 @@ router.use(function(req, res, next) {
 			res.send('Accessed GET req');
 		})
 		.post(function(req, res) {
-			res.send('Accessed POST req');
+			if (req.body) {
+				Campaign.create(req.body, function(err, newEncounter) {
+					if (err) {
+						console.log('/campaigns POST request: Error: ')
+						console.log(err);
+					} else {
+						console.log('/campaigns POST request: OK')
+					}
+				});
+			} else {
+				console.log('/campaigns POST request: Error: ');
+				console.log('null request body');
+			}
 		})
 		.put(function(req, res) {
 			res.send('Accessed PUT req');

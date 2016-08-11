@@ -28,7 +28,7 @@ router.use(function(req, res, next) {
 					} else {
 						console.log('/encounters POST request: OK')
 					}
-				})
+				});
 			} else {
 				console.log('/encounters POST request: Error: ');
 				console.log('null request body');
