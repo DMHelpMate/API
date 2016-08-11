@@ -22,21 +22,21 @@ router.use(function(req, res, next) {
 		.get(function(req, res) {
 			// id in query string: retrieve one by id
 			if (req.query.mon_id) {
-				Monster.findOne({'mon_id': req.query.mon_id}, SELECT,function(err, monster) {
+				Monster.findOne({'mon_id': req.query.mon_id}, SELECT,function(err, result) {
 					if (err) { 
 						return res.json(null); 
 					} else {
-						return res.json(monster);
+						return res.json(result);
 					}
 				});
 
-			// empty query string: return all monsters
+			// empty query string: retrieve all
 			} else {
-				Monster.find({}, SELECT, function(err, monster) {
+				Monster.find({}, SELECT, function(err, result) {
 					if (err) {
 						return res.json(null);
 					} else {
-						return res.json(monster);
+						return res.json(result);
 					}
 				});
 			}
