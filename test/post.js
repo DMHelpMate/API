@@ -87,7 +87,18 @@ describe('Route requests', function() {
 				});
 		});
 	});
-	// describe('Monsters_Encounters request', function() {
-	// 	it('POSTs a Monsters_Encounters JSON to Monsters_Encounters collection', function() {});
-	// });
+	describe('Monsters_Encounters request', function() {
+		it('POSTs a Monsters_Encounters JSON to Monsters_Encounters collection', function() {
+			chai.request(URL)
+				.post('/monsters_encounters')
+				.send({
+					'mon_id': '1234',
+					'enc_id': '9871'
+				})
+				.end(function(err, res) {
+					expect(err).to.be.null;
+					expect(res).should.have.status(200);
+				});
+		});
+	});
 });
