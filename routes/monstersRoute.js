@@ -2,6 +2,9 @@
 // import dependencies
 var router = require('express').Router();
 
+// query select
+const SELECT = '-_id mname mhitpoints mattack mdefense';
+
 // mongoose vars
 var mongoose,
 	Monster;
@@ -17,7 +20,26 @@ router.use(function(req, res, next) {
 			res.sendStatus(403);
 		})
 		.get(function(req, res) {
-			res.send('Accessed GET req');
+			// id in query string: retrieve one by id
+			if (req.query.mon_id) {
+				Monster.findOne({'mon_id': req.query.mon_id}, SELECT,function(err, monster) {
+					if (err) { 
+						return res.json(null); 
+					} else {
+						return res.json(monster);
+					}
+				});
+
+			// empty query string: return all monsters
+			} else {
+				Monster.find({}, SELECT, function(err, monster) {
+					if (err) {
+						return res.json(null);
+					} else {
+						return res.json(monster);
+					}
+				});
+			}
 		})
 		.post(function(req, res) {
 			if (req.body) {
