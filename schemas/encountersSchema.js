@@ -10,10 +10,10 @@ var EncountersSchema = new mongoose.Schema({
 		'setup': String,
 		'readaloud': String
 	},
-	'locations': [{
+	'location': {
 		'name': String,
 		'description': String
-	}],
+	},
 	'monsters': [{
 		'quantity': Number,
 		'mon_id': String
