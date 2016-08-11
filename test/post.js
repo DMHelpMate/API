@@ -62,9 +62,28 @@ describe('Route requests', function() {
 				})
 		});
 	})
-	// describe('Campaign request', function() {
-	// 	it('POSTs a campaign JSON to Campaigns collection', function() {});
-	// });
+	describe('Campaign request', function() {
+		it('POSTs a campaign JSON to Campaigns collection', function() {
+			chai.request(URL)
+				.post('/campaigns')
+				.send({
+					'camp_id': '5555',
+					'general': {
+						'name': 'The Magical Flavors of Dirt',
+						'author': 'Cyrus Sarkosh',
+						'theme': 'Eating Simulator',
+						'description': 'Discover large variety of flavors as you fill you mouth full of various dirts'
+					},
+					'encounters': [
+						'9871'
+					]
+				})
+				.end(function(err, res) {
+					expect(err).to.be.null;
+					expect(res).should.have.status(200);
+				});
+		});
+	});
 	// describe('Monsters_Encounters request', function() {
 	// 	it('POSTs a Monsters_Encounters JSON to Monsters_Encounters collection', function() {});
 	// });
