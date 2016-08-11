@@ -22,7 +22,7 @@ app.set('EncountersSchema', require('./schemas/encountersSchema'));
 app.set('CampaignsSchema', require('./schemas/campaignsSchema'));
 app.set('Monsters_EncountersSchema', require('./schemas/monsters_encountersSchema'));
 
-// sanitize json data
+// sanitize user data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
