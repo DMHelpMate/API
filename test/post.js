@@ -48,10 +48,10 @@ describe('Route requests', function() {
 						'setup': 'A gang war between two lactose interolant gangs is beginning. There are pitchers full of milk everywhere.',
 						'readaloud': 'You stand in the center, two pitchers full of milk, while the lactose interolant gangs prepare for war'
 					},
-					'locations': [{
+					'locations': {
 						'name': 'Dairy Queen',
 						'description': 'In the parking lot of Dairy Queen. There are a few old Toyotas and elderly nearby.'
-					}],
+					},
 					'monsters': [
 						{
 							'quantity': 5,
