@@ -23,16 +23,16 @@ router.use(function(req, res, next) {
 		// 	next();
 		// })
 		.delete(function(req, res) {
-			return res.sendStatus(403);
+			return res.sendStatus(501);
 		})
 		.get(function(req, res) {
 			// id in query string: retrieve one by id
 			if (req.query.mon_id) {
 				Monster.findOne({'mon_id': req.query.mon_id}, SELECT,function(err, result) {
 					if (err) { 
-						return res.json(null); 
+						return res.status(500).json(null); 
 					} else {
-						return res.json(result);
+						return res.status(200).json(result);
 					}
 				});
 
@@ -40,9 +40,9 @@ router.use(function(req, res, next) {
 			} else {
 				Monster.find({}, SELECT, function(err, result) {
 					if (err) {
-						return res.json(null);
+						return res.status(500).json(null);
 					} else {
-						return res.json(result);
+						return res.status(200).json(result);
 					}
 				});
 			}
@@ -53,16 +53,19 @@ router.use(function(req, res, next) {
 					if (err) {
 						console.log('/monsters POST: Error: ');
 						console.log(err);
+						return res.sendStatus(500);
 					} else {
 						console.log('/monsters POST: OK');
+						return res.sendStatus(200);
 					}
 				});
 			} else {
 				console.log('/monsters POST: NULL req.body');
+				return res.sendStatus(204);
 			}
 		})
 		.put(function(req, res) {
-			return res.sendStatus(403);
+			return res.sendStatus(501);
 		});
 
 // make available to node app

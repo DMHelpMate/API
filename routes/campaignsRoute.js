@@ -19,16 +19,16 @@ router.use(function(req, res, next) {
 	})
 	.route('/')
 		.delete(function(req, res) {
-			res.send('Accessed DELETE req');
+			return res.sendStatus(501);
 		})
 		.get(function(req, res) {
 			// id in query string: get one by id
 			if (req.query.camp_id) {
 				Campaign.findOne({'camp_id': req.query.camp_id}, SELECT, function(err, result) {
 					if (err) {
-						return res.json(null);
+						return res.status(500).json(null);
 					} else {
-						return res.json(result);
+						return res.status(200).json(result);
 					}
 				});
 			} 
@@ -37,9 +37,9 @@ router.use(function(req, res, next) {
 			else {
 				Campaign.find({}, SELECT, function(err, result) {
 					if (err) {
-						res.json(null);
+						res.status(500).json(null);
 					} else {
-						res.json(result);
+						res.status(200).json(result);
 					}
 				});
 			}
@@ -50,17 +50,20 @@ router.use(function(req, res, next) {
 					if (err) {
 						console.log('/campaigns POST request: Error: ')
 						console.log(err);
+						return res.sendStatus(500);
 					} else {
 						console.log('/campaigns POST request: OK')
+						return res.sendStatus(200);
 					}
 				});
 			} else {
 				console.log('/campaigns POST request: Error: ');
 				console.log('null request body');
+				return res.sendStatus(204);
 			}
 		})
 		.put(function(req, res) {
-			res.send('Accessed PUT req');
+			return res.sendStatus(501);
 		});
 
 // make available to node app
