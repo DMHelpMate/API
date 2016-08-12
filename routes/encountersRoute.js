@@ -20,16 +20,16 @@ router.use(function(req, res, next) {
 	})
 	.route('/')
 		.delete(function(req, res) {
-			res.sendStatus(403);
+			return res.sendStatus(501);
 		})
 		.get(function(req, res) {
 			// id in query string: retrieve one by id
 			if (req.query.enc_id) {
 				Encounter.findOne({'enc_id': req.query.enc_id}, SELECT, function(err, result) {
 					if (err) {
-						return res.json(null);
+						return res.status(500).json(null);
 					} else {
-						return res.json(result);
+						return res.status(200).json(result);
 					}
 				});
 			}
@@ -37,9 +37,9 @@ router.use(function(req, res, next) {
 			else {
 				Encounter.find({}, SELECT, function(err, result) {
 					if (err) {
-						return res.json(null);
+						return res.status(500).json(null);
 					} else {
-						return res.json(result);
+						return res.status(200).json(result);
 					}
 				});
 			}
@@ -50,17 +50,20 @@ router.use(function(req, res, next) {
 					if (err) {
 						console.log('/encounters POST request: Error: ')
 						console.log(err);
+						return res.sendStatus(500);
 					} else {
-						console.log('/encounters POST request: OK')
+						console.log('/encounters POST request: OK');
+						return res.sendStatus(200);
 					}
 				});
 			} else {
 				console.log('/encounters POST request: Error: ');
 				console.log('null request body');
+				return res.sendStatus(204);
 			}
 		})
 		.put(function(req, res) {
-			res.send('Accessed PUT req');
+			return res.sendStatus(501);
 		});
 
 // make available to node app
