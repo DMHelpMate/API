@@ -12,6 +12,8 @@ var mongoose,
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
 		Mon_Enc = mongoose.model('Monsters_Encounters', req.app.get('Monsters_EncountersSchema'));
+		res.header('Access-Control-Allow-Origin', '*');
+		res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 		next();
 	})
 	.route('/')

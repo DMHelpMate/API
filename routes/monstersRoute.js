@@ -13,11 +13,16 @@ var mongoose,
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
 		Monster = mongoose.model('Monsters', req.app.get('MonstersSchema'));
+		res.header('Access-Control-Allow-Origin', '*');
+		res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 		next();
 	})
 	.route('/')
+		// .all(function(req, res, next) {
+		// 	next();
+		// })
 		.delete(function(req, res) {
-			res.sendStatus(403);
+			return res.sendStatus(403);
 		})
 		.get(function(req, res) {
 			// id in query string: retrieve one by id
@@ -55,10 +60,8 @@ router.use(function(req, res, next) {
 				console.log('/monsters POST: NULL req.body');
 			}
 		})
-		.put(function(req, res, next) {
-		})
-		.all(function(req, res) {
-			console.log('reached last');
+		.put(function(req, res) {
+			return res.sendStatus(403);
 		});
 
 // make available to node app

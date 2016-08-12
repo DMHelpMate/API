@@ -13,6 +13,8 @@ var mongoose,
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
 		Encounter = mongoose.model('Encounter', req.app.get('EncountersSchema'));
+		res.header('Access-Control-Allow-Origin', '*');
+		res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 		next();
 	})
 	.route('/')

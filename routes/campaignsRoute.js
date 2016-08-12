@@ -12,6 +12,8 @@ var mongoose,
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
 		Campaign = mongoose.model('Campaign', req.app.get('CampaignsSchema'));
+		res.header('Access-Control-Allow-Origin', '*');
+		res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 		next();
 	})
 	.route('/')
