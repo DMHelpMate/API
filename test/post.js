@@ -42,13 +42,16 @@ describe('Route requests', function() {
 			chai.request(URL)
 				.post('/encounters')
 				.send({
-					'end_id': '9871',
+					'enc_id': '9871',
 					'general': {
 						'name': 'The Duel of the Lactose Intolerants',
 						'setup': 'A gang war between two lactose interolant gangs is beginning. There are pitchers full of milk everywhere.',
 						'readaloud': 'You stand in the center, two pitchers full of milk, while the lactose interolant gangs prepare for war'
 					},
-					'location': 'Dairy Queen parkinglot',
+					'locations': {
+						'name': 'Dairy Queen',
+						'description': 'In the parking lot of Dairy Queen. There are a few old Toyotas and elderly nearby.'
+					},
 					'monsters': [
 						{
 							'quantity': 5,
@@ -84,7 +87,18 @@ describe('Route requests', function() {
 				});
 		});
 	});
-	// describe('Monsters_Encounters request', function() {
-	// 	it('POSTs a Monsters_Encounters JSON to Monsters_Encounters collection', function() {});
-	// });
+	describe('Monsters_Encounters request', function() {
+		it('POSTs a Monsters_Encounters JSON to Monsters_Encounters collection', function() {
+			chai.request(URL)
+				.post('/monsters_encounters')
+				.send({
+					'mon_id': '1234',
+					'enc_id': '9871'
+				})
+				.end(function(err, res) {
+					expect(err).to.be.null;
+					expect(res).should.have.status(200);
+				});
+		});
+	});
 });
