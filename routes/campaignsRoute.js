@@ -6,6 +6,20 @@ var router = require('express').Router();
 var mongoose,
 	Campaign;
 
+
+/**
+ * getEs() retrieves all encounters in a campaign
+ */
+function getEs(campaign, callback) {
+	var fullResult = {campaign:{}, encounters:[]};
+	for (var i = 0; i < campaign.encounters.length; i++) {
+		(function(i) {
+			
+		})(i);
+	}
+}
+
+
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
