@@ -25,17 +25,17 @@ function getMs(enc, callback) {
 	// null checks
 	if (!enc || !enc.monsters || !enc.monsters.mon_id || enc.monsters.length == 0) {
 		callback(fullResult);
-	}
-
-	for (var i = 0; i < enc.monsters.length; i++) {
-		(function(i) {
-			Monster.findOne({'mon_id': enc.monsters[i].mon_id}, MON_SELECT, function(err, monResult) {
-				fullResult.monsters.push(monResult);
-				if (i == enc.monsters.length - 1) {
-					callback(fullResult);
-				}
-			});
-		}(i));
+	} else {
+		for (var i = 0; i < enc.monsters.length; i++) {
+			(function(i) {
+				Monster.findOne({'mon_id': enc.monsters[i].mon_id}, MON_SELECT, function(err, monResult) {
+					fullResult.monsters.push(monResult);
+					if (i == enc.monsters.length - 1) {
+						callback(fullResult);
+					}
+				});
+			}(i));
+		}
 	}
 }
 
