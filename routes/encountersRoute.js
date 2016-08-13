@@ -21,6 +21,12 @@ var mongoose,
 function getMs(enc, callback) {
 	var fullResult = {enc: {}, monsters: []};
 	fullResult.enc = enc;
+
+	// null checks
+	if (!enc || !enc.monsters || !enc.monsters.mon_id || enc.monsters.length == 0) {
+		callback(fullResult);
+	}
+
 	for (var i = 0; i < enc.monsters.length; i++) {
 		(function(i) {
 			Monster.findOne({'mon_id': enc.monsters[i].mon_id}, MON_SELECT, function(err, monResult) {
