@@ -19,9 +19,6 @@ router.use(function(req, res, next) {
 		next();
 	})
 	.route('/')
-		// .all(function(req, res, next) {
-		// 	next();
-		// })
 		.delete(function(req, res) {
 			return res.sendStatus(501);
 		})
