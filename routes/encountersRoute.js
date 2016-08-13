@@ -18,27 +18,6 @@ var mongoose,
  *
  * @param {object} enc An encounter that contains a monsters[]
  */
- // function getMs(enc, callback) {
- // 	var fullResult = {enc: {}, monsters: []};
- // 	var isUsed = false;
-	// fullResult.enc = enc;
- // 	for (var i = 0; i < enc.monsters.length;) {
- // 		console.log(i + " == " + enc.monsters.length);
- // 		if (!isUsed) {
- // 			isUsed = true;
- // 			i += 1;
-	//  		Monster.findOne({'mon_id': enc.monsters[i - 1].mon_id}, MON_SELECT, function(err, monResult) {
-	//  			console.log('hello');
-	//  			if (!err)
-	//  				fullResult.monsters.push(monResult);
-	//  			isUsed = false;
-	//  			if (i == enc.monsters.length) {
-	//  				callback(fullResult);
-	//  			}
-	//  		});
- // 		}
- // 	}
- // }
 function getMs(enc, callback) {
 	var fullResult = {enc: {}, monsters: []};
 	fullResult.enc = enc;
