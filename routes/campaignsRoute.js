@@ -3,7 +3,7 @@
 var router = require('express').Router();
 var http = require('http');
 
-const SELECT = '-_id general encounters'
+const SELECT = '-_id camp_id general encounters'
 
 // mongoose vars
 var mongoose,
