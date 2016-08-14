@@ -43,7 +43,7 @@ router.use(function(req, res, next) {
 		Campaign = mongoose.model('Campaign', req.app.get('CampaignsSchema'));
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Methods', 'POST, GET');
-		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, cache-control');
+		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, cache-control, pragma');
 		res.header('Cache-Control', 'public, max-age=31557600');
 		next();
 	})
