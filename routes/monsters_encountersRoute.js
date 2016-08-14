@@ -2,16 +2,63 @@
 // import dependencies
 var router = require('express').Router();
 
-const SELECT = '-_id';
+const SELECT 		= '-_id';
+const MON_SELECT 	= '-_id mname mhitpoints mattack mdefense';
+const ENC_SELECT 	= '-_id general location monsters';
 
 // mongoose vars
 var mongoose,
-	Mon_Enc;
+	Mon_Enc,
+	Monsters,
+	Encounters;
+
+
+/**
+ * getMons() retrieves all the monsters belonging to a campaign
+ *
+ * @param {string} enc_id The string value of the encounter's id
+ */
+function getMons(enc_id, callback) {
+	Mon_Enc.find({'enc_id': enc_id}, function(err, docs) {
+		var monArr = [];
+		if (err || !docs || !docs[0] || !docs[0].mon_id) {
+			callback(monArr);
+		} else {
+			for (var i = 0; i < docs.length; i++) {
+				(function(i) {
+					Monsters.findOne({'mon_id': docs[i].mon_id}, MON_SELECT, function(err, monster) {
+						if (!err) {
+							monArr.push(monster);
+						}
+						if (i === docs.length - 1) {
+							callback(monArr);
+						}
+					});
+				}(i));
+			}
+		}
+	});
+} 
+
+
+/**
+ * getEncs() retrieves all the encounters containing a monster 
+ *
+ * @param {string} mon_id The string value of the monster's id
+ */
+function getEncs(mon_id, callback) {
+	Mon_Enc.find({'mon_id': mon_id}, function(err, docs) {
+		callback(docs);
+	});
+}
+
 
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
 		Mon_Enc = mongoose.model('Monsters_Encounters', req.app.get('Monsters_EncountersSchema'));
+		Monsters =  mongoose.model('Monsters', req.app.get('MonstersSchema'));
+		Encounters = mongoose.model('Encounters', req.app.get('EncountersSchema'));
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('POST, GET');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -35,13 +82,15 @@ router.use(function(req, res, next) {
 			} 
 			// mon_id in query string: retrieve all corresponding encounters
 			else if (req.query.mon_id) {
-				// TODO: retrieve all corresponding encounters
-				return res.status(501).json(null);
+				getEncs(req.query.mon_id, function(data) {
+					return res.status(200).json(data);
+				});
 			} 
 			// enc_id in query string: retrieve all corresponding monsters
 			else if (req.query.enc_id) {
-				// TODO: retrieve all corresponding encounters
-				return res.status(501).json(null);
+				getMons(req.query.enc_id, function(data) {
+					return res.status(200).json(data);
+				});
 			} 
 			// empty query string: retrieve all 
 			else {
