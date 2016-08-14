@@ -17,6 +17,8 @@ var mongoose,
  * getMons() retrieves all the monsters belonging to a campaign
  *
  * @param {string} enc_id The string value of the encounter's id
+ *
+ * @callback {array} monArr A collections of monster docs
  */
 function getMons(enc_id, callback) {
 	Mon_Enc.find({'enc_id': enc_id}, function(err, docs) {
@@ -45,6 +47,8 @@ function getMons(enc_id, callback) {
  * getEncs() retrieves all the encounters containing a monster 
  *
  * @param {string} mon_id The string value of the monster's id
+ *
+ * @callback {array} encArr A collection of encounter docs
  */
 function getEncs(mon_id, callback) {
 	Mon_Enc.find({'mon_id': mon_id}, function(err, docs) {
@@ -69,6 +73,30 @@ function getEncs(mon_id, callback) {
 }
 
 
+/**
+ * getMonEnc() retrieves a pair of one encounter and one monster
+ *
+ * @param {string} enc_id The string value of the encounter's id
+ * @param {string} mon_id The string value of the monster's id
+ *
+ * @callback {object} monEnc The monster doc and encounter doc nested in an object
+ */
+function getMonEnc(enc_id, mon_id, callback) {
+	var monEnc = {monster:{}, encounter:{}};
+	Monsters.findOne({'mon_id': mon_id}, MON_SELECT, function(err, monster) {
+		if (!err) {
+			monEnc.monster = monster;
+		}
+		Encounters.findOne({'enc_id': enc_id}, ENC_SELECT, function(err, encounter) {
+			if (!err) {
+				monEnc.encounter = encounter;
+			}
+			callback(monEnc);
+		});
+	});
+}
+
+
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
@@ -87,13 +115,8 @@ router.use(function(req, res, next) {
 		.get(function(req, res) {
 			// mon_id and enc_id in query string: retrieve one where ids match
 			if (req.query.mon_id && req.query.enc_id) {
-				Mon_Enc.findOne({'mon_id': req.query.mon_id, 'enc_id': req.query.enc_id}, SELECT, function(err, result) {
-					// TODO: get actual Enc & Mon doc from query
-					if (err) {
-						return res.status(500).json(null);
-					} else {
-						return res.status(200).json(result);
-					}
+				getMonEnc(req.query.enc_id, req.query.mon_id, function(data) {
+					return res.status(200).json(data);
 				});
 			} 
 			// mon_id in query string: retrieve all corresponding encounters
