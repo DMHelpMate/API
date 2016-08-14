@@ -48,7 +48,23 @@ function getMons(enc_id, callback) {
  */
 function getEncs(mon_id, callback) {
 	Mon_Enc.find({'mon_id': mon_id}, function(err, docs) {
-		callback(docs);
+		var encArr = [];
+		if (err || !docs || !docs[0] || !docs[0].enc_id) {
+			callback(encArr);
+		} else {
+			for (var i = 0; i < docs.length; i++) {
+				(function(i) {
+					Encounters.findOne({'enc_id':docs[i].enc_id}, ENC_SELECT, function(err, encounter) {
+						if (!err) {
+							encArr.push(encounter);
+						}
+						if (i === docs.length - 1) {
+							callback(encArr);
+						}
+					});
+				}(i));
+			}
+		}
 	});
 }
 
