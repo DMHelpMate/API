@@ -13,23 +13,28 @@ var mongoose,
 /**
  * getEs() retrieves all encounters in a campaign
  */
-// function getEs(campaign, callback) {
-// 	var fullResult = {campaign:{}, encounters:[]};
-// 	fullResult.campaign = campaign;
-// 	for (var i = 0; i < campaign.encounters.length; i++) {
-// 		(function(i) {
-// 			http.get('http://api.unicornrampage.com/encounters?enc_id=' + campaign.encounters[i], function(res) {
-// 				res.setEncoding('utf8');
-// 				res.on('data', function(chunk) {
-// 					fullResult.encounters.push(JSON.parse(chunk));
-// 					if (i == campaign.encounters.length - 1) {
-// 						callback(fullResult);
-// 					}
-// 				});
-// 			});
-// 		})(i);
-// 	}
-// }
+function getEs(campaign, callback) {
+	var fullResult = {campaign:{}, encounters:[]};
+	fullResult.campaign = campaign;
+	// null checks
+	if (!campaign || !campaign.encounters || !campaign.encounters[0] || campaign.encounters.length === 0) {
+		callback(fullResult);
+	} else {
+		for (var i = 0; i < campaign.encounters.length; i++) {
+			(function(i) {
+				http.get('http://api.unicornrampage.com/encounters?enc_id=' + campaign.encounters[i], function(res) {
+					res.setEncoding('utf8');
+					res.on('data', function(chunk) {
+						fullResult.encounters.push(JSON.parse(chunk));
+						if (i == campaign.encounters.length - 1) {
+							callback(fullResult);
+						}
+					});
+				});
+			})(i);
+		}
+	}
+}
 
 
 // route http reqs
@@ -52,10 +57,9 @@ router.use(function(req, res, next) {
 					if (err) {
 						return res.status(500).json(null);
 					} else {
-						return res.status(200).json(result);
-						// getEs(result, function(fullResult) {
-						// 	return res.status(200).json(fullResult);
-						// });
+						getEs(result, function(fullResult) {
+							return res.status(200).json(fullResult);
+						});
 					}
 				});
 			} 
