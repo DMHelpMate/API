@@ -46,8 +46,9 @@ router.use(function(req, res, next) {
 		Encounter = mongoose.model('Encounter', req.app.get('EncountersSchema'));
 		Monster = mongoose.model('Monster', req.app.get('MonstersSchema'));
 		res.header('Access-Control-Allow-Origin', '*');
-		res.header('POST, GET');
+		res.header('Access-Control-Allow-Methods', 'POST, GET');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+		res.header('Cache-Control', 'public, max-age=31557600');
 		next();
 	})
 	.route('/')
