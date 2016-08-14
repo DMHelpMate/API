@@ -80,7 +80,6 @@ router.use(function(req, res, next) {
 		})
 		.post(function(req, res) {
 			if (req.body) {
-				req.body._id = mongoose.Types.ObjectId(req.body.enc_id);
 				Encounter.create(req.body, function(err, newEncounter) {
 					if (err) {
 						console.log('/encounters POST request: Error: ')
