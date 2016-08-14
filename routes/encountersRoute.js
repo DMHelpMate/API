@@ -23,9 +23,10 @@ function getMs(enc, callback) {
 	fullResult.enc = enc;
 
 	// null checks
-	if (!enc || !enc.monsters || !enc.monsters.mon_id || enc.monsters.length == 0) {
+	if (!enc || !enc.monsters || !enc.monsters[0] || !enc.monsters[0].mon_id || enc.monsters.length === 0) {
 		callback(fullResult);
 	} else {
+		try {
 		for (var i = 0; i < enc.monsters.length; i++) {
 			(function(i) {
 				Monster.findOne({'mon_id': enc.monsters[i].mon_id}, MON_SELECT, function(err, monResult) {
@@ -35,6 +36,9 @@ function getMs(enc, callback) {
 					}
 				});
 			}(i));
+		}
+		} catch (err) {
+			callback(fullResult);
 		}
 	}
 }
