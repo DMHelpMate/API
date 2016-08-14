@@ -22,12 +22,6 @@ function getMs(enc, callback) {
 	var fullResult = {enc: {}, monsters: []};
 	fullResult.enc = enc;
 
-	// console.log(!enc);
-	// 	console.log(!enc.monsters);
-	// 	console.log(!enc.monsters[0]);
-	// 	console.log(!enc.monsters[0].mon_id);
-	// 	console.log(!enc.monsters.length == 0);
-
 	// null checks
 	if (!enc || !enc.monsters || !enc.monsters[0] || !enc.monsters[0].mon_id || enc.monsters.length === 0) {
 		callback(fullResult);
