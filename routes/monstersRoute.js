@@ -27,11 +27,14 @@ router.use(function(req, res, next) {
 						console.log(err)
 						return res.sendStatus(500);
 					} else {
+						console.log('/monsters DELETE: OK');
 						return res.sendStatus(200);
 					}
 				});
+			} else {
+				console.log('/monsters DELETE: route is not available');
+				return res.sendStatus(501);
 			}
-			return res.sendStatus(501);
 		})
 		.get(function(req, res) {
 			// id in query string: retrieve one by id
@@ -73,7 +76,28 @@ router.use(function(req, res, next) {
 			}
 		})
 		.put(function(req, res) {
-			return res.sendStatus(501);
+			if (req.query.mon_id) {
+				Monster.findOne({'mon_id': req.query.mon_id}, function(err, obj) {
+					if (err) {
+						console.log(err);
+						return res.sendStatus(500);
+					} else {
+						obj = req.query;
+						obj.save(function(err) {
+							if (err) {
+								console.log(err);
+								return res.sendStatus(500);
+							} else {
+								console.log('/monsters PUT: OK');
+								return res.sendStatus(200);
+							}
+						});
+					}
+				});
+			} else {
+				console.log('/monsters PUT: req.query.mon_id is empty');
+				return res.sendStatus(501);
+			}
 		});
 
 // make available to node app
