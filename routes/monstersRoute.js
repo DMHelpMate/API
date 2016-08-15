@@ -21,6 +21,16 @@ router.use(function(req, res, next) {
 	})
 	.route('/')
 		.delete(function(req, res) {
+			if (req.query.mon_id) {
+				Monster.remove({'mon_id': req.query.mon_id}, function(err) {
+					if (err) {
+						console.log(err)
+						return res.sendStatus(500);
+					} else {
+						return res.sendStatus(200);
+					}
+				});
+			}
 			return res.sendStatus(501);
 		})
 		.get(function(req, res) {
