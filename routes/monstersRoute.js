@@ -38,7 +38,6 @@ router.use(function(req, res, next) {
 			}
 		})
 		.get(function(req, res) {
-			console.log(req.query);
 			// id in query string: retrieve one by id
 			if (req.query.mon_id) {
 				Monster.findOne({'mon_id': req.query.mon_id}, SELECT,function(err, result) {
