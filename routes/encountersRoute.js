@@ -40,21 +40,6 @@ function getMs(enc, callback) {
 }
 
 
-/**
- * setFields() sets the fields of a passed in encounter doc
- *
- * @param {object} reqQuery The request query object made to the route
- * @param {object} encounter The document update the values to
- * @callback {object} encounter The updated document
- */
-function setFields(reqBody, encounter, callback) {
-	Object.keys(reqBody).forEach(function(k) {
-		encounter[k] = reqBody[k];
-	});
-	callback(encounter);
-} 
-
-
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
@@ -131,7 +116,7 @@ router.use(function(req, res, next) {
 						console.log(err);
 						return res.sendStatus(500);
 					} else {
-						setFields(req.body, result, function(updatedEncounter) {
+						require('../services/setFields')(req.body, result, function(updatedEncounter) {
 							updatedEncounter.save(function(err) {
 								if (err) {
 									console.log(err);

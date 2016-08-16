@@ -10,21 +10,6 @@ var mongoose,
 	Monster;
 
 
-/**
- * setFields() sets the fields of a passed in monster doc
- *
- * @param {object} reqQuery The request query object made to the route
- * @param {object} monster The document update the values to
- * @callback {object} monster The updated document
- */
-function setFields(reqBody, monster, callback) {
-	Object.keys(reqBody).forEach(function(k) {
-		monster[k] = reqBody[k];
-	});
-	callback(monster);
-} 
-
-
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
@@ -99,7 +84,7 @@ router.use(function(req, res, next) {
 						console.log(err);
 						return res.sendStatus(500);
 					} else {
-						setFields(req.body, obj, function(updateMonster) {
+						require('../services/setFields')(req.body, obj, function(updateMonster) {
 							updateMonster.save(function(err) {
 								if (err) {
 									console.log(err);
