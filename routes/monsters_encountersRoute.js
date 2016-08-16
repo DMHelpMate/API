@@ -3,8 +3,8 @@
 var router = require('express').Router();
 
 const SELECT 		= '-_id';
-const MON_SELECT 	= '-_id mname mhitpoints mattack mdefense';
-const ENC_SELECT 	= '-_id general location monsters';
+const MON_SELECT 	= '-_id mon_id mname mhitpoints mattack mdefense';
+const ENC_SELECT 	= '-_id enc_id general location monsters';
 
 // mongoose vars
 var mongoose,

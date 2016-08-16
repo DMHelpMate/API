@@ -3,7 +3,7 @@
 var router = require('express').Router();
 
 // query select
-const SELECT = '-_id mname mhitpoints mattack mdefense';
+const SELECT = '-_id mon_id mname mhitpoints mattack mdefense';
 
 // mongoose vars
 var mongoose,

@@ -4,8 +4,8 @@ var router = require('express').Router();
 var http = require('http');
 
 // query select
-const SELECT = '-_id general location monsters';
-const MON_SELECT = '-_id mname mhitpoints mattack mdefense';
+const SELECT = '-_id enc_id general location monsters';
+const MON_SELECT = '-_id mon_id mname mhitpoints mattack mdefense';
 
 // mongoose vars
 var mongoose,
