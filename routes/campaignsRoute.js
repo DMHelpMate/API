@@ -7,11 +7,15 @@ const SELECT = '-_id camp_id general encounters'
 
 // mongoose vars
 var mongoose,
-	Campaign;
+	Campaign,
+	Encounter;
 
 
 /**
  * getEs() retrieves all encounters in a campaign
+ *
+ * @param {object} campaign A JSON object representing a campaign
+ * @callback {object} fullResult An object containing the campaign and an array of its encounters
  */
 function getEs(campaign, callback) {
 	var fullResult = {campaign:{}, encounters:[]};
@@ -37,10 +41,33 @@ function getEs(campaign, callback) {
 }
 
 
+/**
+ * removeEs() removes all encounters from the Encounters collection that belongs to the campaign
+ *
+ * @param {object} campaign The campaign document
+ */
+function removeEs(campaign, callback) {
+	for (var i = 0; i < campaign.encounters.length; i++) {
+		(function(i) {
+			Encounter.remove({'enc_id': campaign.encounters[i]}, function(err) {
+				if (err) {
+					console.log('/campaigns DELETE: error removing encounter:');
+					console.log(err);
+				}
+			});
+			if (i === campaign.encounters.length - 1)
+				if (callback)
+					callback();
+		}(i))
+	}
+}
+
+
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
 		Campaign = mongoose.model('Campaign', req.app.get('CampaignsSchema'));
+		Encounter = mongoose.model('Encounter', req.app.get('EncountersSchema'));
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Methods', 'POST, GET');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, cache-control, pragma');
@@ -49,7 +76,27 @@ router.use(function(req, res, next) {
 	})
 	.route('/')
 		.delete(function(req, res) {
-			return res.sendStatus(501);
+			if (req.query.camp_id) {
+				Campaign.findOne({'camp_id': req.query.camp_id}, function(err, result) {
+					if (err) {
+						console.log(err);
+						return res.sendStatus(500);
+					} else {
+						removeEs(result);
+						Campaign.remove({'camp_id': result.camp_id}, function(err) {
+							if (err) {
+								console.log('/campaigns DELETE: Error:');
+								console.log(err);
+								return res.sendStatus(500);
+							} else {
+								console.log('/campaigns DELETE: OK');
+							}
+						})
+					}
+				});
+			} else {
+				console.log('/campaigns DELETE: campaign id is null');
+			}
 		})
 		.get(function(req, res) {
 			// id in query string: get one by id
