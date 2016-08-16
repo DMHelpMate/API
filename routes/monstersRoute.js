@@ -84,15 +84,19 @@ router.use(function(req, res, next) {
 						return res.sendStatus(500);
 					} else {
 						require('../services/setFields')(req.body, obj, function(updateMonster) {
-							updateMonster.save(function(err) {
-								if (err) {
-									console.log(err);
-									return res.sendStatus(500);
-								} else {
-									console.log('/monsters PUT: OK');
-									res.sendStatus(200);
-								}
-							});
+							if (updateMonster) {
+								updateMonster.save(function(err) {
+									if (err) {
+										console.log(err);
+										return res.sendStatus(500);
+									} else {
+										console.log('/monsters PUT: OK');
+										res.sendStatus(200);
+									}
+								});
+							} else {
+								return res.sendStatus(400);
+							}
 						});
 					}
 				});
