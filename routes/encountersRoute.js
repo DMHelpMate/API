@@ -46,14 +46,26 @@ router.use(function(req, res, next) {
 		Encounter = mongoose.model('Encounter', req.app.get('EncountersSchema'));
 		Monster = mongoose.model('Monster', req.app.get('MonstersSchema'));
 		res.header('Access-Control-Allow-Origin', '*');
-		res.header('Access-Control-Allow-Methods', 'POST, GET');
+		res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, cache-control, pragma');
 		res.header('Cache-Control', 'public, max-age=31557600');
 		next();
 	})
 	.route('/')
 		.delete(function(req, res) {
-			return res.sendStatus(501);
+			if (req.query.enc_id) {
+				Encounter.remove({'enc_id':req.query.enc_id}, function(err) {
+					if (err) {
+						console.log(err);
+						return res.sendStatus(500);
+					} else {
+						console.log('/encounters DELETE: OK');
+						return res.sendStatus(200);
+					}
+				});
+			} else {
+				return res.sendStatus(501);
+			}
 		})
 		.get(function(req, res) {
 			// id in query string: retrieve one by id
@@ -98,7 +110,28 @@ router.use(function(req, res, next) {
 			}
 		})
 		.put(function(req, res) {
-			return res.sendStatus(501);
+			if (req.query.enc_id) {
+				Encounter.findOne({'enc_id':req.query.enc_id}, function(err, result) {
+					if (err) {
+						console.log(err);
+						return res.sendStatus(500);
+					} else {
+						require('../services/setFields')(req.body, result, function(updatedEncounter) {
+							updatedEncounter.save(function(err) {
+								if (err) {
+									console.log(err);
+									return res.sendStatus(500);
+								} else {
+									console.log('/encounters PUT: OK');
+									return res.sendStatus(200);
+								}
+							});
+						});
+					}
+				});
+			} else {
+				return res.sendStatus(501);
+			}
 		});
 
 // make available to node app

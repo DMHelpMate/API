@@ -16,7 +16,7 @@ const URL = 'http://localhost:3000';
 mon_url = URL + 'monsters';
 
 // test routes
-describe('Route requests', function() {
+describe('Route POST requests', function() {
 
 	// test monster routes
 	describe('Monster request', function() {
