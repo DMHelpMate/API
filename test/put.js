@@ -29,7 +29,20 @@ describe('route PUT request', function() {
 	});
 	
 	it('/encounters PUT request', function() {
-
+		chai.request(URL)
+			.put('/encounters?enc_id=9871')
+			.send({
+				'asdf': 'asdfa',
+				'big pants': '50% off',
+				'general': {
+					'setup': 'PUT: setup changed',
+					'name': 'The name changed'
+				}
+			})
+			.end(function(err, res) {
+				expect(err).to.be.null;
+				expect(res).should.have.status(200);
+			})
 	});
 
 	it('/campaigns PUT request', function() {
