@@ -53,7 +53,19 @@ router.use(function(req, res, next) {
 	})
 	.route('/')
 		.delete(function(req, res) {
-			return res.sendStatus(501);
+			if (req.query.enc_id) {
+				Encounter.remove({'enc_id':req.query.enc_id}, function(err) {
+					if (err) {
+						console.log(err);
+						return res.sendStatus(500);
+					} else {
+						console.log('/encounters DELETE: OK');
+						return res.sendStatus(200);
+					}
+				});
+			} else {
+				return res.sendStatus(501);
+			}
 		})
 		.get(function(req, res) {
 			// id in query string: retrieve one by id
