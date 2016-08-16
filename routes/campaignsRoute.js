@@ -142,7 +142,12 @@ router.use(function(req, res, next) {
 			}
 		})
 		.put(function(req, res) {
-			return res.sendStatus(501);
+			if (req.query.camp_id) {
+				return res.sendStatus(200);
+			} else {
+				//console.log('')
+				return res.sendStatus(501); 
+			}
 		});
 
 // make available to node app
