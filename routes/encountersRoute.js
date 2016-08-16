@@ -40,6 +40,21 @@ function getMs(enc, callback) {
 }
 
 
+/**
+ * setFields() sets the fields of a passed in encounter doc
+ *
+ * @param {object} reqQuery The request query object made to the route
+ * @param {object} encounter The document update the values to
+ * @callback {object} encounter The updated document
+ */
+function setFields(reqBody, encounter, callback) {
+	Object.keys(reqBody).forEach(function(k) {
+		encounter[k] = reqBody[k];
+	});
+	callback(encounter);
+} 
+
+
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
@@ -110,7 +125,28 @@ router.use(function(req, res, next) {
 			}
 		})
 		.put(function(req, res) {
-			return res.sendStatus(501);
+			if (req.query.enc_id) {
+				Encounter.findOne({'enc_id':req.query.enc_id}, function(err, result) {
+					if (err) {
+						console.log(err);
+						return res.sendStatus(500);
+					} else {
+						setFields(req.body, result, function(updatedEncounter) {
+							updatedEncounter.save(function(err) {
+								if (err) {
+									console.log(err);
+									return res.sendStatus(500);
+								} else {
+									console.log('/encounters PUT: OK');
+									return res.sendStatus(200);
+								}
+							});
+						});
+					}
+				});
+			} else {
+				return res.sendStatus(501);
+			}
 		});
 
 // make available to node app
