@@ -7,8 +7,10 @@
  * @callback {object} doc The updated document
  */
 module.exports = function(body, doc, callback) {
-	Object.keys(body).forEach(function(k) {
-		doc[k] = body[k];
-	});
+	if (body && doc) {
+		Object.keys(body).forEach(function(k) {
+			doc[k] = body[k];
+		});
+	}
 	callback(doc);
 } 
