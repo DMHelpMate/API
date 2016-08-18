@@ -40,9 +40,9 @@ router.use(function(req, res, next) {
 			}
 		})
 		.get(function(req, res) {
-			if (true) {
+			if (require('../config.json').db === 'mysql') {
 				var query = 'SELECT * FROM MONSTERS';
-				if (require('../config.json').db === 'mysql')
+				if (req.query.mon_id)
 					query += ' WHERE mon_id=' + mysqlConn.escape(req.query.mon_id);
 				mysqlConn.query(query, function(err, results, fields) {
 					if (err) {
