@@ -18,24 +18,47 @@ app.set('db', db);
 app.set('mongoose', mongoose);
 
 // create mysql connection and set vars for routes to access mysql
-var mysqlConn = mysql.createConnection({
+var mysql_config = {
 	host: 'localhost',
 	user: 'root',
 	password: 'password',
 	database: 'unicorn'
-});
-mysqlConn.connect(function(err) {
-	if (err) {
-		console.log('MySQL: ERROR in connect: ');
-		console.log(err);
-		app.set('mysql', null);
-		app.set('mysqlConn', null);
-	} else {
-		console.log('MySQL: connection OK');
-		app.set('mysql', mysql);
-		app.set('mysqlConn', mysqlConn);
-	}
-});
+};
+var mysqlConn;
+
+function handleDisconnect() {
+	mysqlConn = mysql.createConnection(mysql_config);
+	mysqlConn.connect(function(err) {
+		if (err) {
+			console.log('error when connecting to db:', err);
+			setTimeout(handleDisconnect, 2000);
+		} else {
+			app.set('mysql', mysql);
+	 		app.set('mysqlConn', mysqlConn);
+		}
+	});
+	mysqlConn.on('error', function(err) {
+		console.log('mysql error:', err);
+		if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+			handleDisconnect();
+		} else {
+			throw err;
+		}
+	});
+}
+handleDisconnect();
+// mysqlConn.connect(function(err) {
+// 	if (err) {
+// 		console.log('MySQL: ERROR in connect: ');
+// 		console.log(err);
+// 		app.set('mysql', null);
+// 		app.set('mysqlConn', null);
+// 	} else {
+// 		console.log('MySQL: connection OK');
+// 		app.set('mysql', mysql);
+// 		app.set('mysqlConn', mysqlConn);
+// 	}
+// });
 
 // globalize mongo schemas
 app.set('MonstersSchema', require('./schemas/monstersSchema'));
