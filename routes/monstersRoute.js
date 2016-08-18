@@ -7,13 +7,15 @@ const SELECT = '-_id mon_id mname mhitpoints mattack mdefense';
 
 // mongoose vars
 var mongoose,
-	Monster;
+	Monster,
+	mysqlConn;
 
 
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
 		Monster = mongoose.model('Monsters', req.app.get('MonstersSchema'));
+		mysqlConn = req.app.get('mysqlConn');
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, cache-control, pragma');
@@ -38,25 +40,41 @@ router.use(function(req, res, next) {
 			}
 		})
 		.get(function(req, res) {
-			// id in query string: retrieve one by id
-			if (req.query.mon_id) {
-				Monster.findOne({'mon_id': req.query.mon_id}, SELECT,function(err, result) {
-					if (err) { 
-						return res.status(500).json(null); 
-					} else {
-						return res.status(200).json(result);
-					}
-				});
-
-			// empty query string: retrieve all
-			} else {
-				Monster.find({}, SELECT, function(err, result) {
+			if (true) {
+				var query = 'SELECT * FROM MONSTERS';
+				if (require('../config.json').db === 'mysql')
+					query += ' WHERE mon_id=' + mysqlConn.escape(req.query.mon_id);
+				mysqlConn.query(query, function(err, results, fields) {
 					if (err) {
-						return res.status(500).json(null);
+						console.log('/monsters GET: Error:');
+						console.log(err);
+						return res.status(500).send(err);
 					} else {
-						return res.status(200).json(result);
+						console.log('/monsters GET: OK');
+						return res.status(200).json(results);
 					}
 				});
+			} else {
+				// id in query string: retrieve one by id
+				if (req.query.mon_id) {
+					Monster.findOne({'mon_id': req.query.mon_id}, SELECT,function(err, result) {
+						if (err) { 
+							return res.status(500).json(null); 
+						} else {
+							return res.status(200).json(result);
+						}
+					});
+
+				// empty query string: retrieve all
+				} else {
+					Monster.find({}, SELECT, function(err, result) {
+						if (err) {
+							return res.status(500).json(null);
+						} else {
+							return res.status(200).json(result);
+						}
+					});
+				}
 			}
 		})
 		.post(function(req, res) {
