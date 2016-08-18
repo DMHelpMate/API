@@ -9,6 +9,9 @@ files:
   - source: package.json
     destination: /opt/unicorn
 
+  - source: config.json
+    destination: /opt/unicorn
+
   - source: routes
     destination: /opt/unicorn/routes
 
