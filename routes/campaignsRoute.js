@@ -34,7 +34,7 @@ function getEs(campaign, callback) {
 						campData += chunk;
 					});
 					res.on('end', function() {
-						fullResult.encounters.push(JSON.parse(chunk));
+						fullResult.encounters.push(JSON.parse(campData));
 						if (i == campaign.encounters.length - 1) {
 							callback(fullResult);
 						}
