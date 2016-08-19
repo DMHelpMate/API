@@ -80,13 +80,16 @@ function getFullEncs(doc, callback) {
 		(function(i) {
 			var encPath = '/encounters?enc_id=' + doc.encounters[i];
 			http.get({
-				hostname: 'localhost',
-				port: 3000,
+				hostname: 'api.unicornrampage.com',
 				path: encPath
 			}, function(res) {
 				res.setEncoding('utf8');
+				var encData = '';
 				res.on('data', function(chunk) {
-					encs.push(JSON.parse(chunk));
+					encData += chunk;
+				});
+				res.on('end', function() {
+					encs.push(JSON.parse(encData));
 					if (i === doc.encounters.length - 1)
 						callback(encs);
 				});
