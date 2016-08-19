@@ -42,13 +42,14 @@ describe('Route POST requests', function() {
 			chai.request(URL)
 				.post('/encounters')
 				.send({
-					'enc_id': 'test2',
+					'enc_id': 'test4',
+					'camp_id': '1',
 					'general': {
 						'name': 'The Duel of the Lactose Intolerants',
 						'setup': 'A gang war between two lactose interolant gangs is beginning. There are pitchers full of milk everywhere.',
 						'readaloud': 'You stand in the center, two pitchers full of milk, while the lactose interolant gangs prepare for war'
 					},
-					'locations': {
+					'location': {
 						'name': 'Dairy Queen',
 						'description': 'In the parking lot of Dairy Queen. There are a few old Toyotas and elderly nearby.'
 					},
@@ -70,7 +71,7 @@ describe('Route POST requests', function() {
 			chai.request(URL)
 				.post('/campaigns')
 				.send({
-					'camp_id': '5555',
+					'camp_id': '55555',
 					'general': {
 						'name': 'The Magical Flavors of Dirt',
 						'author': 'Cyrus Sarkosh',

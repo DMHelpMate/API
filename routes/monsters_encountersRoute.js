@@ -149,14 +149,18 @@ router.use(function(req, res, next) {
 		.post(function(req, res) {
 			if (req.body) {
 				Mon_Enc.create(req.body, function(err, newMon_Enc) {
-					if (err) {
-						console.log('/monsters_encounters POST: Error: ');
-						console.log(err);
-						return res.sendStatus(500);
-					} else {
-						console.log('/monsters_encounters POST: OK');
-						return res.sendStatus(200);
-					}
+					var sql = 'INSERT INTO MONSTERS_ENCOUNTERS (mon_id, enc_id, quantity) VALUES (?,?,?)'
+					console.log(sql);
+					mysqlConn.query( sql, [req.body.mon_id, req.body.enc_id, req.body.quantity], function(err, result) {
+						if (err) {
+							console.log('/monsters_encounters POST: Error: ');
+							console.log(err);
+							return res.sendStatus(500);
+						} else {
+							console.log('/monsters_encounters POST: OK');
+							return res.sendStatus(200);
+						}
+					});
 				});
 			} else {
 				console.log('/monsters_encounters POST: NULL req.body');
