@@ -98,6 +98,32 @@ function getMonEnc(enc_id, mon_id, callback) {
 }
 
 
+function getMonsQuanID(doc, callback) {
+	mysqlConn.query('SELECT mon_id, quantity FROM MONSTERS_ENCOUNTERS WHERE enc_id = ?', [doc.enc_id], function(err, results, fields) {
+		callback(results);
+	});
+}
+
+function buildEncounter(doc, callback) {
+	getMonsQuanID(doc, function(results) {
+			callback({
+			'enc_id': doc.enc_id,
+			'general': {
+				'name': doc.name,
+				'setup': doc.setup,
+				'readaloud': doc.readaloud
+			},
+			'location': {
+				'name': doc.loc_name,
+				'description': doc.loc_description
+			},
+			'monsters': results
+		});
+	});
+	
+}
+
+
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
@@ -116,34 +142,90 @@ router.use(function(req, res, next) {
 			return res.sendStatus(501);
 		})
 		.get(function(req, res) {
-			// mon_id and enc_id in query string: retrieve one where ids match
-			if (req.query.mon_id && req.query.enc_id) {
-				getMonEnc(req.query.enc_id, req.query.mon_id, function(data) {
-					return res.status(200).json(data);
-				});
-			} 
-			// mon_id in query string: retrieve all corresponding encounters
-			else if (req.query.mon_id) {
-				getEncs(req.query.mon_id, function(data) {
-					return res.status(200).json(data);
-				});
-			} 
-			// enc_id in query string: retrieve all corresponding monsters
-			else if (req.query.enc_id) {
-				getMons(req.query.enc_id, function(data) {
-					return res.status(200).json(data);
-				});
-			} 
-			// empty query string: retrieve all 
-			else {
-				// TODO: retrieve actual JSON of all monsters and encounters
-				Mon_Enc.find({}, SELECT, function(err, result) {
-					if (err) {
-						return res.status(500).json(null);
-					} else {
-						return res.status(200).json(result);
-					}
-				});
+			if (require('../config.json').db === 'mysql') {
+				if (req.query.mon_id && req.query.enc_id) {
+					var me = {'monster': {},'encounter': {}};
+					mysqlConn.query('SELECT * FROM MONSTERS WHERE mon_id = ?', [req.query.mon_id], function(err, result) {
+						me.monster = result;
+						mysqlConn.query('SELECT * FROM ENCOUNTERS WHERE enc_id = ?', [req.query.enc_id], function(err, resulte) {
+							if (resulte[0]) {
+								buildEncounter(resulte[0], function(enc) {
+									me.encounter = enc;
+									return res.json(me);
+								});
+							} else {
+								return res.json(me);
+							}
+						});
+					});
+					
+				} else if (req.query.mon_id) {
+					var encs = [];
+					mysqlConn.query('SELECT * FROM ENCOUNTERS E LEFT JOIN MONSTERS_ENCOUNTERS ME ON E.enc_id = ME.enc_id WHERE ME.mon_id = ?', [req.query.mon_id], function(error, results) {
+						if (error || !results || results.length === 0)
+							return res.json(null);
+						for (var i = 0; i < results.length; i++) {
+							(function(i) {
+								buildEncounter(results[i], function(enc) {
+									encs.push(enc);
+									if (i === results.length - 1)
+										return res.json(encs);
+								});
+							}(i));
+						}
+					});
+				} else if (req.query.enc_id) {
+					mysqlConn.query('SELECT mon_id FROM MONSTERS_ENCOUNTERS WHERE enc_id = ?', [req.query.enc_id], function(error, results) {
+						var mons = [];
+						if (!results || !results[0] || !results[0].mon_id || results.length === 0) {
+							return res.json(null);
+						} else {
+							for (var i = 0; i < results.length; i++) {
+								(function(i) {
+									mysqlConn.query('SELECT * FROM MONSTERS WHERE mon_id = ?', [results[i].mon_id], function(error, monsters) {
+										mons.push(monsters);
+										if (i === results.length - 1)
+											return res.json(mons);
+									});
+								}(i));
+							}
+						}
+					});
+				} else {
+					mysqlConn.query('SELECT mon_id, enc_id FROM MONSTERS_ENCOUNTERS', function(error, results) {
+						return res.json(results);
+					});
+				}
+			} else {
+				// mon_id and enc_id in query string: retrieve one where ids match
+				if (req.query.mon_id && req.query.enc_id) {
+					getMonEnc(req.query.enc_id, req.query.mon_id, function(data) {
+						return res.status(200).json(data);
+					});
+				} 
+				// mon_id in query string: retrieve all corresponding encounters
+				else if (req.query.mon_id) {
+					getEncs(req.query.mon_id, function(data) {
+						return res.status(200).json(data);
+					});
+				} 
+				// enc_id in query string: retrieve all corresponding monsters
+				else if (req.query.enc_id) {
+					getMons(req.query.enc_id, function(data) {
+						return res.status(200).json(data);
+					});
+				} 
+				// empty query string: retrieve all 
+				else {
+					// TODO: retrieve actual JSON of all monsters and encounters
+					Mon_Enc.find({}, SELECT, function(err, result) {
+						if (err) {
+							return res.status(500).json(null);
+						} else {
+							return res.status(200).json(result);
+						}
+					});
+				}
 			}
 		})
 		.post(function(req, res) {
