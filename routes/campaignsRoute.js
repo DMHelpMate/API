@@ -8,6 +8,7 @@ const SELECT = '-_id camp_id general encounters'
 // mongoose vars
 var mongoose,
 	Campaign,
+	mysqlConn,
 	Encounter;
 
 
@@ -68,6 +69,7 @@ router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
 		Campaign = mongoose.model('Campaign', req.app.get('CampaignsSchema'));
 		Encounter = mongoose.model('Encounter', req.app.get('EncountersSchema'));
+		mysqlConn = req.app.get('mysqlConn');
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, cache-control, pragma');

@@ -10,6 +10,7 @@ const ENC_SELECT 	= '-_id enc_id general location monsters';
 var mongoose,
 	Mon_Enc,
 	Monsters,
+	mysqlConn,
 	Encounters;
 
 
@@ -103,6 +104,7 @@ router.use(function(req, res, next) {
 		Mon_Enc = mongoose.model('Monsters_Encounters', req.app.get('Monsters_EncountersSchema'));
 		Monsters =  mongoose.model('Monsters', req.app.get('MonstersSchema'));
 		Encounters = mongoose.model('Encounters', req.app.get('EncountersSchema'));
+		mysqlConn = req.app.get('mysqlConn');
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, cache-control, pragma');

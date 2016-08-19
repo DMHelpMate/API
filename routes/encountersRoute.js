@@ -10,7 +10,8 @@ const MON_SELECT = '-_id mon_id mname mhitpoints mattack mdefense';
 // mongoose vars
 var mongoose,
 	Encounter,
-	Monster;
+	Monster,
+	mysqlConn;
 
 
 /**
@@ -45,6 +46,7 @@ router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
 		Encounter = mongoose.model('Encounter', req.app.get('EncountersSchema'));
 		Monster = mongoose.model('Monster', req.app.get('MonstersSchema'));
+		mysqlConn = req.app.get('mysqlConn');
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, cache-control, pragma');
