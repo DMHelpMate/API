@@ -83,6 +83,7 @@ function getFullEncs(doc, callback) {
 	for (var i = 0; i < doc.encounters.length; i++) {
 		(function(i) {
 			var encPath = '/encounters?enc_id=' + mysqlConn.escape(doc.encounters[i]);
+			console.log(encPath);
 			http.get({
 				hostname: 'api.unicornrampage.com',
 				path: encPath
