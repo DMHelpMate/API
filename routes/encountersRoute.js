@@ -168,6 +168,7 @@ router.use(function(req, res, next) {
 				Encounter.create(req.body, function(err, newEncounter) {
 					var sql = 'INSERT INTO ENCOUNTERS (enc_id, name, setup, readaloud, loc_name, loc_description, camp_id) VALUES (?,?,?,?,?,?,?)';
 					if (!req.body.enc_id || !req.body.general || !req.body.location) {
+						console.log('/encounters POST: null check error:');
 						console.log(req.body);
 						return res.sendStatus(400);
 					} else {

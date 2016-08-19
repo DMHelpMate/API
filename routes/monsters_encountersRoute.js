@@ -231,8 +231,10 @@ router.use(function(req, res, next) {
 		.post(function(req, res) {
 			if (req.body) {
 				Mon_Enc.create(req.body, function(err, newMon_Enc) {
-					if (!req.body.mon_id || req.body.enc_id) {
-						res.sendStatus(400);
+					if (!req.body.mon_id || !req.body.enc_id) {
+						console.log('/encounters POST: null check error:');
+						console.log(req.body);
+						return res.sendStatus(400);
 					} else {
 						var sql = 'INSERT INTO MONSTERS_ENCOUNTERS (mon_id, enc_id, quantity) VALUES (?,?,?)'
 						console.log(sql);

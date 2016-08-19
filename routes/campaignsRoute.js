@@ -217,6 +217,8 @@ router.use(function(req, res, next) {
 			if (req.body) {
 				Campaign.create(req.body, function(err, newEncounter) {
 					if (!req.body.camp_id || !req.body.general) {
+						console.log('/campaigns POST: null check error:');
+						console.log(req.body);
 						return res.sendStatus(400);
 					} else {
 						var sql = 'INSERT INTO CAMPAIGNS (camp_id, name, author, theme, description) VALUES (?,?,?,?,?)';
