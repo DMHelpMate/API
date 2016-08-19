@@ -19,9 +19,16 @@ describe('route PUT request', function() {
 		chai.request(URL)
 			.put('/monsters?mon_id=1234')
 			.send({
-				'hairiness': 'excessive',
-				'mattack': 10000
+				'mon_id' : 'Brand Fucking New',
+				'mname' : 'Heraldy the ',
+				'mhitpoints' : 5,
+				'mattack' : 5,
+				'mdefense' : 5
 			})
+			// .send({
+			// 	'hairiness': 'excessive',
+			// 	'mattack': 10000
+			// })
 			.end(function(err, res) {
 				expect(err).to.be.null;
 				expect(res).should.have.status(200);

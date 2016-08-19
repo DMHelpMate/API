@@ -103,26 +103,29 @@ router.use(function(req, res, next) {
 		.put(function(req, res) {
 			if (req.query.mon_id) {
 				Monster.findOne({'mon_id': req.query.mon_id}, function(err, obj) {
-					if (err) {
-						console.log(err);
-						return res.sendStatus(500);
-					} else {
-						require('../services/setFields')(req.body, obj, function(updateMonster) {
-							if (updateMonster) {
-								updateMonster.save(function(err) {
-									if (err) {
-										console.log(err);
-										return res.sendStatus(500);
-									} else {
-										console.log('/monsters PUT: OK');
-										res.sendStatus(200);
-									}
-								});
-							} else {
-								return res.sendStatus(400);
-							}
-						});
-					}
+					var sql = 'UPDATE MONSTERS SET mname = ?, mhitpoints = ?, mattack = ?, mdefense = ? WHERE mon_id = ?';
+					 mysqlConn.query(sql, [req.body.mname, req.body.mhitpoints, req.body.mattack, req.body.mattack, req.query.mon_id], function(err, result) {
+						if (err) {
+							console.log(err);
+							return res.sendStatus(500);
+						} else {
+							require('../services/setFields')(req.body, obj, function(updateMonster) {
+								if (updateMonster) {
+									updateMonster.save(function(err) {
+										if (err) {
+											console.log(err);
+											return res.sendStatus(500);
+										} else {
+											console.log('/monsters PUT: OK');
+											res.sendStatus(200);
+										}
+									});
+								} else {
+									return res.sendStatus(400);
+								}
+							});
+						}
+					});
 				});
 			} else {
 				console.log('/monsters PUT: req.query.mon_id is empty');
