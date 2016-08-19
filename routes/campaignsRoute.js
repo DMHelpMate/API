@@ -29,7 +29,11 @@ function getEs(campaign, callback) {
 			(function(i) {
 				http.get('http://api.unicornrampage.com/encounters?enc_id=' + campaign.encounters[i], function(res) {
 					res.setEncoding('utf8');
+					var campData = '';
 					res.on('data', function(chunk) {
+						campData += chunk;
+					});
+					res.on('end', function() {
 						fullResult.encounters.push(JSON.parse(chunk));
 						if (i == campaign.encounters.length - 1) {
 							callback(fullResult);
