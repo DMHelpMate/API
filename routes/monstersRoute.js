@@ -41,19 +41,15 @@ router.use(function(req, res, next) {
 		})
 		.get(function(req, res) {
 			if (require('../config.json').db === 'mysql') {
-				var query = 'SELECT * FROM MONSTERS';
-				if (req.query.mon_id)
-					query += ' WHERE mon_id=' + mysqlConn.escape(req.query.mon_id);
-				mysqlConn.query(query, function(err, results, fields) {
-					if (err) {
-						console.log('/monsters GET: Error:');
-						console.log(err);
-						return res.status(500).send(err);
-					} else {
-						console.log('/monsters GET: OK');
+				if (req.query.mon_id) {
+					mysqlConn.query('SELECT * FROM MONSTERS WHERE mon_id = ?', [req.query.mon_id], function(err, result) {
+						return res.status(200).json(result[0]);
+					});
+				} else {
+					mysqlConn.query('SELECT * FROM `MONSTERS`', function(err, results, fields) {
 						return res.status(200).json(results);
-					}
-				});
+					});
+				}
 			} else {
 				// id in query string: retrieve one by id
 				if (req.query.mon_id) {
