@@ -82,7 +82,10 @@ function getFullEncs(doc, callback) {
 	var encs = [];
 	for (var i = 0; i < doc.encounters.length; i++) {
 		(function(i) {
-			var encPath = '/encounters?enc_id=' + mysqlConn.escape(doc.encounters[i]);
+			if (doc.encounters[i].charAt(0) === '\'' && doc.encounters[i].charAt(doc.encounters.length() - 1) === '\'') {
+				doc.encounters[i] = doc.encounters[i].substring(1, doc.encounters[i].charAt(doc.encounters.length() - 2));
+			}
+			var encPath = '/encounters?enc_id=' + doc.encounters[i];
 			console.log(encPath);
 			http.get({
 				hostname: 'api.unicornrampage.com',
