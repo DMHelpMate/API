@@ -128,17 +128,21 @@ router.use(function(req, res, next) {
 		.post(function(req, res) {
 			if (req.body) {
 				Campaign.create(req.body, function(err, newEncounter) {
-					var sql = 'INSERT INTO CAMPAIGNS (camp_id, name, author, theme, description) VALUES (?,?,?,?,?)';
-					mysqlConn.query( sql, [req.body.camp_id, req.body.general.name, req.body.general.author, req.body.general.theme, req.body.general.description], function(err, result) {
-						if (err) {
-							console.log('/campaigns POST request: Error: ')
-							console.log(err);
-							return res.sendStatus(500);
-						} else {
-							console.log('/campaigns POST request: OK')
-							return res.sendStatus(200);
-						}
-					});
+					if (!req.body.camp_id || !req.body.general) {
+						return res.sendStatus(400);
+					} else {
+						var sql = 'INSERT INTO CAMPAIGNS (camp_id, name, author, theme, description) VALUES (?,?,?,?,?)';
+						mysqlConn.query( sql, [req.body.camp_id, req.body.general.name, req.body.general.author, req.body.general.theme, req.body.general.description], function(err, result) {
+							if (err) {
+								console.log('/campaigns POST request: Error: ')
+								console.log(err);
+								return res.sendStatus(500);
+							} else {
+								console.log('/campaigns POST request: OK')
+								return res.sendStatus(200);
+							}
+						});
+					}
 				});
 			} else {
 				console.log('/campaigns POST request: Error: ');
