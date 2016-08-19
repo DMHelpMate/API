@@ -242,10 +242,31 @@ router.use(function(req, res, next) {
 		})
 		.put(function(req, res) {
 			if (req.query.camp_id) {
-				return res.sendStatus(200);
+				Campaign.findOne({'camp_id': req.query.camp_id}, function(err, obj) {
+					if (err) {
+						console.log(err);
+						return res.sendStatus(500);
+					} else {
+						require('../services/setFields')(req.body, obj, function(updateCampaign) {
+							if (updateCampaign) {
+								updateCampaign.save(function(err) {
+									if (err) {
+										console.log(err);
+										return res.sendStatus(500);
+									} else {
+										console.log('/campaigns PUT: OK');
+										res.sendStatus(200);
+									}
+								});
+							} else {
+								return res.sendStatus(400);
+							}
+						});
+					}
+				});
 			} else {
-				//console.log('')
-				return res.sendStatus(501); 
+				console.log('/campaings PUT: req.query.camp_id is empty');
+				return res.sendStatus(501);
 			}
 		});
 
