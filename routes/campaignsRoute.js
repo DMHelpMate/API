@@ -64,6 +64,62 @@ function removeEs(campaign, callback) {
 }
 
 
+function getEIDsMySQL(doc, callback) {
+	mysqlConn.query('SELECT * FROM ENCOUNTERS WHERE camp_id = ?',[doc.camp_id], function(err, results, fields) {
+		var arr = [];
+		for (var i = 0; i < results.length; i++) {
+			arr.push(results[i].enc_id);
+		}
+		callback(arr);
+	});
+}
+
+function getFullEncs(doc, callback) {
+	var encs = [];
+	for (var i = 0; i < doc.encounters.length; i++) {
+		(function(i) {
+			var encPath = '/encounters?enc_id=' + doc.encounters[i];
+			http.get({
+				hostname: 'localhost',
+				port: 3000,
+				path: encPath
+			}, function(res) {
+				res.setEncoding('utf8');
+				res.on('data', function(chunk) {
+					encs.push(JSON.parse(chunk));
+					if (i === doc.encounters.length - 1)
+						callback(encs);
+				});
+			});
+		}(i));
+	}
+}
+
+function uniformAllCamp(doc, callback) {
+	getEIDsMySQL(doc, function(results) {
+		callback({
+			'camp_id': doc.camp_id,
+			'general': {
+				'name': doc.name,
+				'author': doc.author,
+				'theme': doc.author,
+				'description': doc.description
+			},
+			'encounters': results
+		});
+	});
+}
+
+function getFullCampaign(doc, callback) {
+	var full = {'campaign':{}, 'encounters': []};
+	full.campaign = doc;
+	getFullEncs(doc, function(encs) {
+		full.encounters = encs;
+		callback(full);
+	});
+}
+
+
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
@@ -101,28 +157,57 @@ router.use(function(req, res, next) {
 			}
 		})
 		.get(function(req, res) {
-			// id in query string: get one by id
-			if (req.query.camp_id) {
-				Campaign.findOne({'camp_id': req.query.camp_id}, SELECT, function(err, result) {
-					if (err) {
-						return res.status(500).json(null);
-					} else {
-						getEs(result, function(fullResult) {
-							return res.status(200).json(fullResult);
-						});
-					}
-				});
-			} 
+			if (require('../config.json').db === 'mysql') {
+				if (req.query.camp_id) {
+					mysqlConn.query('SELECT * FROM CAMPAIGNS WHERE camp_id = ?', [req.query.camp_id], function(err, result, fields) {
+						if (err || !result || !result[0] || result.length === 0) {
+							return res.json(null);
+						} else {
+							uniformAllCamp(result[0], function(partialCamp) {
+								getFullCampaign(partialCamp, function(fullCamp) {
+									return res.json(fullCamp);
+								});
+							});
+						}
+					});
+				} else {
+					var campsArr = [];
+					mysqlConn.query('SELECT * FROM CAMPAIGNS', function(err, results, fields) {
+						for (var i = 0; i < results.length; i++) {
+							(function(i) {
+								uniformAllCamp(results[i], function(camp) {
+									campsArr.push(camp);
+									if (i === results.length - 1)
+										return res.json(campsArr);
+								});
+							}(i));
+						}
+					});
+				}
+			} else {
+				// id in query string: get one by id
+				if (req.query.camp_id) {
+					Campaign.findOne({'camp_id': req.query.camp_id}, SELECT, function(err, result) {
+						if (err) {
+							return res.status(500).json(null);
+						} else {
+							getEs(result, function(fullResult) {
+								return res.status(200).json(fullResult);
+							});
+						}
+					});
+				} 
 
-			// empty query string: retrieve all
-			else {
-				Campaign.find({}, SELECT, function(err, result) {
-					if (err) {
-						res.status(500).json(null);
-					} else {
-						res.status(200).json(result);
-					}
-				});
+				// empty query string: retrieve all
+				else {
+					Campaign.find({}, SELECT, function(err, result) {
+						if (err) {
+							res.status(500).json(null);
+						} else {
+							res.status(200).json(result);
+						}
+					});
+				}
 			}
 		})
 		.post(function(req, res) {
