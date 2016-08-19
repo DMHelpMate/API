@@ -78,17 +78,21 @@ router.use(function(req, res, next) {
 				// MONGO DB Query
 				Monster.create(req.body, function(err, newMonster) {
 					// SQL DB Query
-					var sql = 'INSERT INTO MONSTERS (mon_id, mname, mhitpoints, mattack, mdefense) VALUES (?,?,?,?,?)';
-					mysqlConn.query(sql, [req.body.mon_id, req.body.mname, req.body.mhitpoints, req.body.mattack, req.body.mattack], function(err, result) {
-						if (err) {
-							console.log('/monsters POST: Error: ');
-							console.log(err);
-							return res.sendStatus(500);
-						} else {
-							console.log('/monsters POST: OK');
-							return res.sendStatus(200);
-						}
-					});
+					if (!req.body.mon_id) {
+						return res.sendStatus(400);
+					} else {
+						var sql = 'INSERT INTO MONSTERS (mon_id, mname, mhitpoints, mattack, mdefense) VALUES (?,?,?,?,?)';
+						mysqlConn.query(sql, [req.body.mon_id, req.body.mname, req.body.mhitpoints, req.body.mattack, req.body.mattack], function(err, result) {
+							if (err) {
+								console.log('/monsters POST: Error: ');
+								console.log(err);
+								return res.sendStatus(500);
+							} else {
+								console.log('/monsters POST: OK');
+								return res.sendStatus(200);
+							}
+						});
+					}
 				});
 			// No req.body
 			} else {
