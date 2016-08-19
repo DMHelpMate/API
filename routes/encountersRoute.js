@@ -41,6 +41,48 @@ function getMs(enc, callback) {
 }
 
 
+function getMonsQuanID(doc, callback) {
+	mysqlConn.query('SELECT mon_id, quantity FROM MONSTERS_ENCOUNTERS WHERE enc_id = ?', [doc.enc_id], function(err, results, fields) {
+		callback(results);
+	});
+}
+
+function buildEncounter(doc, callback) {
+	getMonsQuanID(doc, function(results) {
+			callback({
+			'enc_id': doc.enc_id,
+			'general': {
+				'name': doc.name,
+				'setup': doc.setup,
+				'readaloud': doc.readaloud
+			},
+			'location': {
+				'name': doc.loc_name,
+				'description': doc.loc_description
+			},
+			'monsters': results
+		});
+	});
+	
+}
+
+function buildFullEncounter(doc, callback) {
+	var full = {enc:{}, monsters:[]};
+	buildEncounter(doc, function(result) {
+		full.enc = result;
+		for (var i = 0; i < result.monsters.length; i++) {
+			(function(i) {
+				mysqlConn.query('SELECT * FROM MONSTERS WHERE mon_id = ?', [result.monsters[i].mon_id], function(err, monster, fields) {
+					full.monsters.push(monster[0]);
+					if (i === result.monsters.length - 1)
+						callback(full);
+				});
+			}(i));
+		}
+	});
+}
+
+
 // route http reqs
 router.use(function(req, res, next) {
 		mongoose = req.app.get('mongoose');
@@ -70,27 +112,54 @@ router.use(function(req, res, next) {
 			}
 		})
 		.get(function(req, res) {
-			// id in query string: retrieve one by id
-			if (req.query.enc_id) {
-				Encounter.findOne({'enc_id': req.query.enc_id}, SELECT, function(err, result) {
-					if (err) {
-						return res.status(500).json(null);
-					} else {
-						getMs(result, function(newResult) {
-							return res.status(200).json(newResult);
-						});
-					}
-				});
-			}
-			// empty query string: retrieve all
-			else {
-				Encounter.find({}, SELECT, function(err, result) {
-					if (err) {
-						return res.status(500).json(null);
-					} else {
-						return res.status(200).json(result);
-					}
-				});
+			if (require('../config.json').db === 'mysql') {
+				if (req.query.enc_id) {
+					mysqlConn.query('SELECT * FROM ENCOUNTERS WHERE enc_id = ?', [req.query.enc_id], function(err, result, fields) {
+						if (!result || !result[0] || result.length === 0) {
+							return res.json(null);
+						} else {
+							buildFullEncounter(result[0], function(fullEnc) {
+								return res.json(fullEnc);
+							});
+						}
+					});
+				} else {
+					mysqlConn.query('SELECT * FROM ENCOUNTERS', function(err, results, fields) {
+						var encs = [];
+						for (var i = 0; i < results.length; i++) {
+							(function(i) {
+								buildEncounter(results[i], function(result) {
+									encs.push(result);
+									if (i === results.length - 1)
+										return res.json(encs);
+								});
+							}(i));
+						}
+					});
+				}
+			} else {
+				// id in query string: retrieve one by id
+				if (req.query.enc_id) {
+					Encounter.findOne({'enc_id': req.query.enc_id}, SELECT, function(err, result) {
+						if (err) {
+							return res.status(500).json(null);
+						} else {
+							getMs(result, function(newResult) {
+								return res.status(200).json(newResult);
+							});
+						}
+					});
+				}
+				// empty query string: retrieve all
+				else {
+					Encounter.find({}, SELECT, function(err, result) {
+						if (err) {
+							return res.status(500).json(null);
+						} else {
+							return res.status(200).json(result);
+						}
+					});
+				}
 			}
 		})
 		.post(function(req, res) {
@@ -98,16 +167,20 @@ router.use(function(req, res, next) {
 				// Mongo DB Query
 				Encounter.create(req.body, function(err, newEncounter) {
 					var sql = 'INSERT INTO ENCOUNTERS (enc_id, name, setup, readaloud, loc_name, loc_description, camp_id) VALUES (?,?,?,?,?,?,?)';
-					mysqlConn.query(sql, [req.body.enc_id, req.body.general.name, req.body.general.setup, req.body.general.readaloud, req.body.location.name, req.body.location.description, req.body.camp_id], function(err, result) {
-						if (err) {
-							console.log('/encounters POST request: Error: ')
-							console.log(err);
-							return res.sendStatus(500);
-						} else {
-							console.log('/encounters POST request: OK');
-							return res.sendStatus(200);
-						}
-					});
+					if (!req.body.enc_id || !req.body.general || !req.body.location) {
+						return res.sendStatus(400);
+					} else {
+						mysqlConn.query(sql, [req.body.enc_id, req.body.general.name, req.body.general.setup, req.body.general.readaloud, req.body.location.name, req.body.location.description, req.body.camp_id], function(err, result) {
+							if (err) {
+								console.log('/encounters POST request: Error: ')
+								console.log(err);
+								return res.sendStatus(500);
+							} else {
+								console.log('/encounters POST request: OK');
+								return res.sendStatus(200);
+							}
+						});
+					}
 				});
 			} else {
 				console.log('/encounters POST request: Error: ');
