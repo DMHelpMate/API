@@ -1,6 +1,6 @@
 
 // import dependencies
-var router = require('express').Router();
+var router = require('express').Router(); 
 
 // query select
 const SELECT = '-_id mon_id mname mhitpoints mattack mdefense';
@@ -41,19 +41,15 @@ router.use(function(req, res, next) {
 		})
 		.get(function(req, res) {
 			if (require('../config.json').db === 'mysql') {
-				var query = 'SELECT * FROM MONSTERS';
-				if (req.query.mon_id)
-					query += ' WHERE mon_id=' + mysqlConn.escape(req.query.mon_id);
-				mysqlConn.query(query, function(err, results, fields) {
-					if (err) {
-						console.log('/monsters GET: Error:');
-						console.log(err);
-						return res.status(500).send(err);
-					} else {
-						console.log('/monsters GET: OK');
+				if (req.query.mon_id) {
+					mysqlConn.query('SELECT * FROM MONSTERS WHERE mon_id = ?', [req.query.mon_id], function(err, result) {
+						return res.status(200).json(result[0]);
+					});
+				} else {
+					mysqlConn.query('SELECT * FROM `MONSTERS`', function(err, results, fields) {
 						return res.status(200).json(results);
-					}
-				});
+					});
+				}
 			} else {
 				// id in query string: retrieve one by id
 				if (req.query.mon_id) {
@@ -79,16 +75,22 @@ router.use(function(req, res, next) {
 		})
 		.post(function(req, res) {
 			if (req.body) {
+				// MONGO DB Query
 				Monster.create(req.body, function(err, newMonster) {
-					if (err) {
-						console.log('/monsters POST: Error: ');
-						console.log(err);
-						return res.sendStatus(500);
-					} else {
-						console.log('/monsters POST: OK');
-						return res.sendStatus(200);
-					}
+					// SQL DB Query
+					var sql = 'INSERT INTO MONSTERS (mon_id, mname, mhitpoints, mattack, mdefense) VALUES (?,?,?,?,?)';
+					mysqlConn.query(sql, [req.body.mon_id, req.body.mname, req.body.mhitpoints, req.body.mattack, req.body.mattack], function(err, result) {
+						if (err) {
+							console.log('/monsters POST: Error: ');
+							console.log(err);
+							return res.sendStatus(500);
+						} else {
+							console.log('/monsters POST: OK');
+							return res.sendStatus(200);
+						}
+					});
 				});
+			// No req.body
 			} else {
 				console.log('/monsters POST: NULL req.body');
 				return res.sendStatus(204);
@@ -97,26 +99,29 @@ router.use(function(req, res, next) {
 		.put(function(req, res) {
 			if (req.query.mon_id) {
 				Monster.findOne({'mon_id': req.query.mon_id}, function(err, obj) {
-					if (err) {
-						console.log(err);
-						return res.sendStatus(500);
-					} else {
-						require('../services/setFields')(req.body, obj, function(updateMonster) {
-							if (updateMonster) {
-								updateMonster.save(function(err) {
-									if (err) {
-										console.log(err);
-										return res.sendStatus(500);
-									} else {
-										console.log('/monsters PUT: OK');
-										res.sendStatus(200);
-									}
-								});
-							} else {
-								return res.sendStatus(400);
-							}
-						});
-					}
+					var sql = 'UPDATE MONSTERS SET mname = ?, mhitpoints = ?, mattack = ?, mdefense = ? WHERE mon_id = ?';
+					 mysqlConn.query(sql, [req.body.mname, req.body.mhitpoints, req.body.mattack, req.body.mattack, req.query.mon_id], function(err, result) {
+						if (err) {
+							console.log(err);
+							return res.sendStatus(500);
+						} else {
+							require('../services/setFields')(req.body, obj, function(updateMonster) {
+								if (updateMonster) {
+									updateMonster.save(function(err) {
+										if (err) {
+											console.log(err);
+											return res.sendStatus(500);
+										} else {
+											console.log('/monsters PUT: OK');
+											res.sendStatus(200);
+										}
+									});
+								} else {
+									return res.sendStatus(400);
+								}
+							});
+						}
+					});
 				});
 			} else {
 				console.log('/monsters PUT: req.query.mon_id is empty');
