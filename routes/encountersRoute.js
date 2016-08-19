@@ -168,6 +168,7 @@ router.use(function(req, res, next) {
 				Encounter.create(req.body, function(err, newEncounter) {
 					var sql = 'INSERT INTO ENCOUNTERS (enc_id, name, setup, readaloud, loc_name, loc_description, camp_id) VALUES (?,?,?,?,?,?,?)';
 					if (!req.body.enc_id || !req.body.general || !req.body.location) {
+						console.log(req.body);
 						return res.sendStatus(400);
 					} else {
 						mysqlConn.query(sql, [req.body.enc_id, req.body.general.name, req.body.general.setup, req.body.general.readaloud, req.body.location.name, req.body.location.description, req.body.camp_id], function(err, result) {
