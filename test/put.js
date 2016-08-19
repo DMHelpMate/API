@@ -25,10 +25,6 @@ describe('route PUT request', function() {
 				'mattack' : 5,
 				'mdefense' : 5
 			})
-			// .send({
-			// 	'hairiness': 'excessive',
-			// 	'mattack': 10000
-			// })
 			.end(function(err, res) {
 				expect(err).to.be.null;
 				expect(res).should.have.status(200);
