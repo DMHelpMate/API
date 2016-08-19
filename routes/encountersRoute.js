@@ -93,16 +93,20 @@ router.use(function(req, res, next) {
 		})
 		.post(function(req, res) {
 			if (req.body) {
+				// Mongo DB Query
 				Encounter.create(req.body, function(err, newEncounter) {
-					if (err) {
-						console.log('/encounters POST request: Error: ')
-						console.log(err);
-						return res.sendStatus(500);
-					} else {
-						console.log('/encounters POST request: OK');
-						return res.sendStatus(200);
-					}
-				});
+					// var sql = 'INSERT INTO ENCOUNTERS (enc_id, name, setup, readaloud, loc_name, loc_description, camp_id) VALUES (?,?,?,?,?,?,?)';
+					// mysqlConn.query(sql, [req.body.enc_id, req.body.general.name, req.body.general.setup, req.body.general.readaloud, req.body.location.name, req.body.location.description, req.body.camp_id], function(err, result) {
+						if (err) {
+							console.log('/encounters POST request: Error: ')
+							console.log(err);
+							return res.sendStatus(500);
+						} else {
+							console.log('/encounters POST request: OK');
+							return res.sendStatus(200);
+						}
+					});
+				// });
 			} else {
 				console.log('/encounters POST request: Error: ');
 				console.log('null request body');

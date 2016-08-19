@@ -1,6 +1,6 @@
 
 // import dependencies
-var router = require('express').Router();
+var router = require('express').Router(); 
 
 // query select
 const SELECT = '-_id mon_id mname mhitpoints mattack mdefense';
@@ -79,16 +79,22 @@ router.use(function(req, res, next) {
 		})
 		.post(function(req, res) {
 			if (req.body) {
+				// MONGO DB Query
 				Monster.create(req.body, function(err, newMonster) {
-					if (err) {
-						console.log('/monsters POST: Error: ');
-						console.log(err);
-						return res.sendStatus(500);
-					} else {
-						console.log('/monsters POST: OK');
-						return res.sendStatus(200);
-					}
+					// SQL DB Query
+					var sql = 'INSERT INTO MONSTERS (mon_id, mname, mhitpoints, mattack, mdefense) VALUES (?,?,?,?,?)';
+					mysqlConn.query(sql, [req.body.mon_id, req.body.mname, req.body.mhitpoints, req.body.mattack, req.body.mattack], function(err, result) {
+						if (err) {
+							console.log('/monsters POST: Error: ');
+							console.log(err);
+							return res.sendStatus(500);
+						} else {
+							console.log('/monsters POST: OK');
+							return res.sendStatus(200);
+						}
+					});
 				});
+			// No req.body
 			} else {
 				console.log('/monsters POST: NULL req.body');
 				return res.sendStatus(204);
