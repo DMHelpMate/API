@@ -85,7 +85,7 @@ function getFullEncs(doc, callback) {
 			if (doc.encounters[i].charAt(0) === '\'' && doc.encounters[i].charAt(doc.encounters[i].length() - 1) === '\'') {
 				doc.encounters[i] = doc.encounters[i].substring(1, doc.encounters[i].charAt(doc.encounters[i].length - 2));
 			}
-			var encPath = '/encounters?enc_id=' + mysqlConn.escape(doc.encounters[i]);
+			var encPath = '/encounters?enc_id=' + encodeURI(doc.encounters[i]);
 			console.log(encPath);
 			http.get({
 				hostname: 'api.unicornrampage.com',
